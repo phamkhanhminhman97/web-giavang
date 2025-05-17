@@ -31,9 +31,13 @@ const Hero = () => {
   };
 
   return (
-    <div className="relative bg-gradient-gold py-12 md:py-16 lg:py-20 overflow-hidden">
+    <div className="relative bg-gradient-to-br from-gold-light via-white to-gold-muted py-12 md:py-16 lg:py-20 overflow-hidden">
       {/* Gold Pattern Overlay */}
       <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjRDRBRjM3IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxjaXJjbGUgY3g9IjMiIGN5PSIzIiByPSIxIi8+PGNpcmNsZSBjeD0iMTMiIGN5PSIxMyIgcj0iMSIvPjwvZz48L3N2Zz4=')] bg-repeat"></div>
+      
+      {/* Golden Orbs */}
+      <div className="absolute top-1/4 left-10 bg-gradient-rich h-20 w-20 rounded-full blur-xl opacity-30"></div>
+      <div className="absolute bottom-1/4 right-10 bg-gradient-rich h-32 w-32 rounded-full blur-xl opacity-30"></div>
       
       <div className="container mx-auto px-4 relative">
         <div className="flex justify-end mb-4">
@@ -44,13 +48,15 @@ const Hero = () => {
         </div>
         
         <div className="text-center max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-gold-dark font-playfair">
-            Giá Vàng Việt Nam
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 font-playfair">
+            <span className="bg-gradient-to-r from-gold-dark to-gold bg-clip-text text-transparent">
+              Giá Vàng Việt Nam
+            </span>
           </h1>
           <p className="text-slate-700 text-lg mb-8 max-w-2xl mx-auto">
             Cập nhật giá vàng 24/7, thông tin thị trường vàng mới nhất và chính xác tức thời
           </p>
-          <div className="inline-block gold-shimmer py-1 px-4 rounded-full text-white text-sm md:text-base shadow-md">
+          <div className="inline-block bg-gradient-luxury py-1 px-4 rounded-full text-white text-sm md:text-base shadow-md">
             Cập nhật lần cuối: {formatTime(currentDateTime)} {formatDate(currentDateTime)}
           </div>
         </div>
