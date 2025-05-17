@@ -39,22 +39,25 @@ const GoldTabs = () => {
             title="Vàng miếng SJC 1L"
             buyPrice="78,900,000"
             sellPrice="80,900,000"
-            change="+500,000"
-            isUp={true}
+            buyChange={2}
+            sellChange={2}
+            isSelected={true}
           />
           <GoldPriceCard
             title="Vàng nhẫn 9999"
             buyPrice="78,550,000"
             sellPrice="79,650,000"
-            change="+450,000"
-            isUp={true}
+            buyChange={2}
+            sellChange={2}
+            isSelected={true}
           />
           <GoldPriceCard
             title="Vàng nữ trang 9999"
             buyPrice="78,450,000"
             sellPrice="79,550,000"
-            change="+400,000"
-            isUp={true}
+            buyChange={2}
+            sellChange={2}
+            isSelected={true}
           />
         </TabsContent>
       ))}
@@ -64,7 +67,7 @@ const GoldTabs = () => {
         <h3 className="text-lg font-semibold mb-4 text-slate-800">
           Biến động giá vàng {selectedVendor} trong 30 ngày qua
         </h3>
-        <PriceChart />
+        <PriceChart title={""} goldType={""} />
       </div>
     </Tabs>
   );

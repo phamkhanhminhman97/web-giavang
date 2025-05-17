@@ -65,7 +65,9 @@ const Footer = () => {
           <p className="text-slate-500 text-sm">© {new Date().getFullYear()} GiaVang247.Online. Tất cả các quyền được bảo lưu.</p>
           <div className="mt-4 md:mt-0">
             <p className="text-slate-500 text-sm">
-              {/* <Link to="/disclaimer" className="hover:text-gold-dark">Miễn trừ trách nhiệm</Link> */}
+              <Link to="/mien-tru" className="hover:text-gold-dark">Miễn trừ trách nhiệm</Link>
+              <span className="mx-2">|</span>
+              <Link to="/bao-mat" className="hover:text-gold-dark">Chính sách bảo mật</Link>
               <span className="mx-2">|</span>
               <Link to="/sitemap.xml" className="hover:text-gold-dark">Sơ đồ trang web</Link>
             </p>
