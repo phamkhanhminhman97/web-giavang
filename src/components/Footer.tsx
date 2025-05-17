@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Youtube, Instagram } from "lucide-react";
 
@@ -62,14 +61,18 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-slate-200 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-slate-500 text-sm">© {new Date().getFullYear()} GiaVang247.Online. Tất cả các quyền được bảo lưu.</p>
+          <p className="text-slate-500 text-sm">© 2024 GiaVang247.Online. Bản quyền thuộc về GiaVang247.</p>
           <div className="mt-4 md:mt-0">
             <p className="text-slate-500 text-sm">
               <Link to="/mien-tru" className="hover:text-gold-dark">Miễn trừ trách nhiệm</Link>
               <span className="mx-2">|</span>
               <Link to="/bao-mat" className="hover:text-gold-dark">Chính sách bảo mật</Link>
               <span className="mx-2">|</span>
-              <Link to="/sitemap.xml" className="hover:text-gold-dark">Sơ đồ trang web</Link>
+              <Link to="/dieu-khoan" className="hover:text-gold-dark">Điều khoản sử dụng</Link>
+              <span className="mx-2">|</span>
+              <Link to="/lien-he" className="hover:text-gold-dark">Liên hệ</Link>
+              <span className="mx-2">|</span>
+              {/* <Link to="/sitemap.xml" className="hover:text-gold-dark">Sơ đồ trang web</Link> */}
             </p>
           </div>
         </div>

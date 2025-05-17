@@ -1,8 +1,9 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { articles } from '@/data/articles';
 import { ArrowLeft } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+// import { Helmet } from 'react-helmet-async';
 
 const ArticleDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,66 +31,70 @@ const ArticleDetail = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* <Helmet>
+        <title>{article.title} | GiaVang247</title>
+        <meta name="description" content={article.summary} />
+        <link rel="canonical" href={window.location.href} />
+      </Helmet> */}
       <Navbar />
-      
       <main className="flex-grow">
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-10">
+          {/* Breadcrumbs */}
+          <nav className="mb-6 text-sm text-slate-500 flex items-center gap-2" aria-label="Breadcrumb">
+            <Link to="/" className="hover:text-gold-dark">Trang chủ</Link>
+            <span className="mx-1">/</span>
+            <Link to="/phan-tich" className="hover:text-gold-dark">Phân tích</Link>
+            <span className="mx-1">/</span>
+            <span className="text-gold-dark font-medium truncate max-w-xs" title={article.title}>{article.title}</span>
+          </nav>
           <button 
             onClick={() => navigate(-1)}
-            className="mb-6 text-gold-dark hover:underline flex items-center"
+            className="mb-8 text-gold-dark hover:underline flex items-center text-base"
           >
-            <ArrowLeft size={16} className="mr-1" /> Quay lại
+            <ArrowLeft size={18} className="mr-2" /> Quay lại
           </button>
-          
-          <article className="max-w-4xl mx-auto">
+          <article className="max-w-2xl mx-auto bg-white rounded-xl shadow p-8 md:p-10 border border-gray-100">
             <header className="mb-8">
-              <p className="text-gold text-sm mb-2">Đăng ngày: {article.date}</p>
-              <h1 className="text-3xl md:text-4xl font-bold font-playfair text-slate-900 mb-4">
+              <h1 className="text-3xl md:text-4xl font-bold font-playfair text-gray-900 mb-2 leading-tight">
                 {article.title}
               </h1>
+              <p className="text-sm text-gray-400">Đăng ngày: {article.date}</p>
             </header>
-            
-            <div className="prose max-w-none">
-              <p className="text-lg text-slate-700 mb-6">{article.summary}</p>
-              
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-100">
-                <h2 className="text-2xl font-bold font-playfair text-slate-800 mb-6">
-                  {article.content.title}
-                </h2>
-                
-                {article.content.paragraphs.map((paragraph, index) => (
-                  <p key={index} className="mb-4 text-slate-700 leading-relaxed">
-                    {paragraph}
-                  </p>
-                ))}
-                
-                {article.content.list && (
-                  <div className="my-6">
-                    {article.content.list.title && (
-                      <h3 className="text-lg font-semibold mb-3 text-slate-800">
-                        {article.content.list.title}
-                      </h3>
-                    )}
-                    <ul className="list-disc pl-6 space-y-2 text-slate-700">
-                      {article.content.list.items.map((item, index) => (
-                        <li key={index}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                
-                {article.content.conclusion && (
-                  <div className="mt-8 pt-6 border-t border-slate-100">
-                    <p className="text-slate-700 font-medium">{article.content.conclusion}</p>
-                  </div>
-                )}
-              </div>
+            <p className="text-lg text-gray-700 mb-8 font-serif leading-relaxed text-center">{article.summary}</p>
+            <div className="w-full h-52 md:h-64 rounded-lg overflow-hidden mb-10 bg-gray-100 flex items-center justify-center">
+              <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=800&q=80" alt="gold" className="object-cover w-full h-full" />
+            </div>
+            <div className="prose max-w-none text-gray-800 prose-headings:font-playfair prose-headings:text-gold-dark prose-h2:text-2xl prose-h2:mb-6">
+              <h2>{article.content.title}</h2>
+              {article.content.paragraphs.map((paragraph, index) => (
+                <p key={index} className="mb-4 text-base leading-relaxed">
+                  {paragraph}
+                </p>
+              ))}
+              {article.content.list && (
+                <div className="my-8 bg-gray-50 rounded-lg p-5 border-l-4 border-gold-light">
+                  {article.content.list.title && (
+                    <h3 className="text-base font-semibold mb-3 text-gold-dark font-playfair">
+                      {article.content.list.title}
+                    </h3>
+                  )}
+                  <ul className="list-disc pl-6 space-y-2 text-base">
+                    {article.content.list.items.map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {article.content.conclusion && (
+                <blockquote className="mt-10 border-l-4 border-gold-light bg-gray-50 text-lg italic text-gold-dark font-serif rounded p-5">
+                  {article.content.conclusion}
+                </blockquote>
+              )}
             </div>
           </article>
         </div>
       </main>
-      
       <Footer />
     </div>
   );

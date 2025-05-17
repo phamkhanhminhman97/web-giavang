@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,7 @@ import BaoMat from "./pages/BaoMat";
 import Help from "./pages/Help";
 import Faq from "./pages/Faq";
 import Disclaimer from "./pages/Disclaimer";
+import CookieConsent from './components/CookieConsent';
 
 const queryClient = new QueryClient();
 
@@ -38,6 +38,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <CookieConsent />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
