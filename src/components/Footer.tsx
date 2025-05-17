@@ -39,9 +39,9 @@ const Footer = () => {
             <FooterLinks
               links={[
                 { name: "Trang chủ", href: "/" },
-                { name: "Bảng giá vàng", href: "/price-table" },
-                { name: "Phân tích thị trường", href: "/market-analysis" },
-                { name: "Tin tức", href: "/news" },
+                // { name: "Bảng giá vàng", href: "/price-table" },
+                { name: "Phân tích thị trường", href: "/phan-tich" },
+                // { name: "Tin tức", href: "/news" },
                 { name: "Liên hệ", href: "/lien-he" },
               ]}
             />
@@ -65,9 +65,9 @@ const Footer = () => {
           <p className="text-slate-500 text-sm">© {new Date().getFullYear()} GiaVang247.Online. Tất cả các quyền được bảo lưu.</p>
           <div className="mt-4 md:mt-0">
             <p className="text-slate-500 text-sm">
-              <Link to="/disclaimer" className="hover:text-gold-dark">Miễn trừ trách nhiệm</Link>
+              {/* <Link to="/disclaimer" className="hover:text-gold-dark">Miễn trừ trách nhiệm</Link> */}
               <span className="mx-2">|</span>
-              <Link to="/sitemap" className="hover:text-gold-dark">Sơ đồ trang web</Link>
+              <Link to="/sitemap.xml" className="hover:text-gold-dark">Sơ đồ trang web</Link>
             </p>
           </div>
         </div>
