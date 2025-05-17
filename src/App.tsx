@@ -11,6 +11,8 @@ import GioiThieu from "./pages/GioiThieu";
 import LienHe from "./pages/LienHe";
 import DieuKhoan from "./pages/DieuKhoan";
 import BaoMat from "./pages/BaoMat";
+import Help from "./pages/Help";
+import Faq from "./pages/Faq";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +29,8 @@ const App = () => (
           <Route path="/lien-he" element={<LienHe />} />
           <Route path="/dieu-khoan" element={<DieuKhoan />} />
           <Route path="/bao-mat" element={<BaoMat />} />
+          <Route path="/help" element={<Help />} />
+          <Route path="/faq" element={<Faq />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

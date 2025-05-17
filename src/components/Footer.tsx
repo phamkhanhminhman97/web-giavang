@@ -1,5 +1,6 @@
 
 import { Link } from "react-router-dom";
+import { Facebook, Twitter, Youtube, Instagram } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -18,10 +19,18 @@ const Footer = () => {
               Thông tin giá vàng được cập nhật liên tục 24/7.
             </p>
             <div className="flex space-x-4">
-              <SocialIcon href="#" icon="facebook" />
-              <SocialIcon href="#" icon="twitter" />
-              <SocialIcon href="#" icon="youtube" />
-              <SocialIcon href="#" icon="telegram" />
+              <SocialIcon href="#" icon="facebook">
+                <Facebook size={16} />
+              </SocialIcon>
+              <SocialIcon href="#" icon="twitter">
+                <Twitter size={16} />
+              </SocialIcon>
+              <SocialIcon href="#" icon="youtube">
+                <Youtube size={16} />
+              </SocialIcon>
+              <SocialIcon href="#" icon="instagram">
+                <Instagram size={16} />
+              </SocialIcon>
             </div>
           </div>
 
@@ -33,7 +42,7 @@ const Footer = () => {
                 { name: "Bảng giá vàng", href: "/price-table" },
                 { name: "Phân tích thị trường", href: "/market-analysis" },
                 { name: "Tin tức", href: "/news" },
-                { name: "Liên hệ", href: "/contact" },
+                { name: "Liên hệ", href: "/lien-he" },
               ]}
             />
           </div>
@@ -42,9 +51,9 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4 font-playfair">Thông tin</h3>
             <FooterLinks
               links={[
-                { name: "Giới thiệu", href: "/about" },
-                { name: "Chính sách bảo mật", href: "/privacy" },
-                { name: "Điều khoản sử dụng", href: "/terms" },
+                { name: "Giới thiệu", href: "/gioi-thieu" },
+                { name: "Chính sách bảo mật", href: "/bao-mat" },
+                { name: "Điều khoản sử dụng", href: "/dieu-khoan" },
                 { name: "Trung tâm trợ giúp", href: "/help" },
                 { name: "Hỏi đáp", href: "/faq" },
               ]}
@@ -70,20 +79,21 @@ const Footer = () => {
 type SocialIconProps = {
   href: string;
   icon: string;
+  children: React.ReactNode;
 };
 
-const SocialIcon = ({ href, icon }: SocialIconProps) => {
+const SocialIcon = ({ href, icon, children }: SocialIconProps) => {
   return (
     <a 
       href={href} 
       target="_blank" 
       rel="noopener noreferrer" 
       className="w-8 h-8 rounded-full bg-slate-200 hover:bg-gold-light transition-colors flex items-center justify-center"
+      aria-label={`Follow us on ${icon}`}
     >
       <span className="sr-only">{icon}</span>
-      <div className="w-4 h-4 text-slate-700">
-        {/* We would normally use actual SVG icons here */}
-        {icon.charAt(0).toUpperCase()}
+      <div className="text-slate-700">
+        {children}
       </div>
     </a>
   );
