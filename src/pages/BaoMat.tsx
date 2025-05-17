@@ -1,7 +1,7 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { Shield, ShieldCheck, ShieldAlert, Lock, Eye, CheckSquare } from "lucide-react";
+import { Shield, ShieldCheck, ShieldAlert, Lock, Eye, CheckSquare, ExternalLink } from "lucide-react";
 
 const BaoMat = () => {
   return (

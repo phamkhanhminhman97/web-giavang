@@ -1,7 +1,7 @@
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { FileText, CheckCircle, AlertCircle, ExternalLink } from "lucide-react";
+import { FileText, CheckCircle, AlertCircle, ExternalLink, Mail } from "lucide-react";
 
 const DieuKhoan = () => {
   return (
