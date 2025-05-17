@@ -25,5 +25,10 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+# Disallow certain folders (if needed)
+# User-agent: *
+# Disallow: /admin/
+# Disallow: /private/
+
 # Sitemap location
 Sitemap: https://giavang247.online/sitemap.xml
