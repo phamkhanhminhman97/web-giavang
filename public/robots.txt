@@ -8,21 +8,42 @@ User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
 
+User-agent: Googlebot-Image
+Allow: /
+Crawl-delay: 1
+
+User-agent: Googlebot-News
+Allow: /
+Crawl-delay: 1
+
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
 
 User-agent: Yandexbot
 Allow: /
+Crawl-delay: 2
 
 User-agent: Baiduspider
 Allow: /
+Crawl-delay: 2
 
 # Social media crawlers
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
+Allow: /
+
+# Optimize crawling
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 2
+
+User-agent: DuckDuckBot
 Allow: /
 
 # Disallow certain folders (if needed)

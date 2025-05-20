@@ -5,10 +5,12 @@ import GoldTabs from "@/components/GoldTabs";
 import PriceInfo from "@/components/PriceInfo";
 import MarketTrend from "@/components/MarketTrend";
 import Footer from "@/components/Footer";
+import SEO from "@/components/SEO";
 
 const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO pageName="home" />
       <Navbar />
       
       <main className="flex-grow">

@@ -3,12 +3,14 @@ import Footer from "@/components/Footer";
 import { BarChart, PieChart, Activity, TrendingUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { articles } from "@/data/articles";
 import { useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
 
 const PhanTich = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO pageName="phan-tich" />
       <Navbar />
       
       <main className="flex-grow">

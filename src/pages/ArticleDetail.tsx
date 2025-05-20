@@ -3,7 +3,7 @@ import { articles } from '@/data/articles';
 import { ArrowLeft } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-// import { Helmet } from 'react-helmet-async';
+import SEO from '@/components/SEO';
 
 const ArticleDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,11 +32,7 @@ const ArticleDetail = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* <Helmet>
-        <title>{article.title} | GiaVang247</title>
-        <meta name="description" content={article.summary} />
-        <link rel="canonical" href={window.location.href} />
-      </Helmet> */}
+      <SEO pageName="article" customData={{ article }} />
       <Navbar />
       <main className="flex-grow">
         <div className="container mx-auto px-4 py-10">

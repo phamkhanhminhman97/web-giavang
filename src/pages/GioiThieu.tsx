@@ -2,10 +2,12 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CheckCircle, Award, Clock } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const GioiThieu = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO pageName="gioi-thieu" />
       <Navbar />
       
       <main className="flex-grow">
