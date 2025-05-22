@@ -52,4 +52,4 @@ Allow: /
 # Disallow: /private/
 
 # Sitemap location
-Sitemap: https://giavang247.online/sitemap.xml
+Sitemap: https://www.giavang247.online/sitemap.xml

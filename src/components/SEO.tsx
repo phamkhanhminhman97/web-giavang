@@ -40,6 +40,9 @@ const SEO = ({ pageName, customData }: SEOProps) => {
       <meta name="twitter:description" content={tags.twitterDescription} />
       <meta name="twitter:image" content={tags.twitterImage} />
       
+      {/* Creator */}
+      <meta name="creator" content="GiaVang247" />
+      
       {/* Structured Data */}
       {Object.entries(structuredData).map(([key, data]) => (
         <script key={key} type="application/ld+json">

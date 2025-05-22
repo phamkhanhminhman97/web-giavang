@@ -12,7 +12,7 @@
  * @returns Object containing meta tags and structured data
  */
 export const generateMetaTags = (pageName: string, customData?: any) => {
-  const baseUrl = 'https://giavang247.online';
+  const baseUrl = 'https://www.giavang247.online';
   const defaultDescription = 'Cập nhật giá vàng Việt Nam SJC, DOJI, PNJ, Bảo Tín Minh Châu, Mi Hồng, Phú Quý, Huy Thanh mới nhất 24/7. Thông tin thị trường vàng chính xác, nhanh chóng, tin cậy mỗi ngày.';
   const defaultKeywords = 'giá vàng, vàng SJC, vàng DOJI, vàng PNJ, vàng Bảo Tín Minh Châu, vàng Mi Hồng, vàng Phú Quý, vàng Huy Thanh, giá vàng hôm nay, giá vàng 24/7';
   const defaultImage = `${baseUrl}/og-image.png`;
@@ -116,10 +116,10 @@ const generateHomeStructuredData = () => {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       'name': 'Giá Vàng 24/7',
-      'url': 'https://giavang247.online/',
+      'url': 'https://www.giavang247.online/',
       'potentialAction': {
         '@type': 'SearchAction',
-        'target': 'https://giavang247.online/search?q={search_term}',
+        'target': 'https://www.giavang247.online/search?q={search_term}',
         'query-input': 'required name=search_term'
       },
       'description': 'Cập nhật giá vàng Việt Nam SJC, DOJI, PNJ, Bảo Tín Minh Châu, Mi Hồng, Phú Quý, Huy Thanh mới nhất 24/7. Thông tin thị trường vàng chính xác, nhanh chóng, tin cậy mỗi ngày.',
@@ -172,13 +172,13 @@ const generateAnalysisStructuredData = () => {
           '@type': 'ListItem',
           'position': 1,
           'name': 'Trang Chủ',
-          'item': 'https://giavang247.online/'
+          'item': 'https://www.giavang247.online/'
         },
         {
           '@type': 'ListItem',
           'position': 2,
           'name': 'Phân Tích',
-          'item': 'https://giavang247.online/phan-tich'
+          'item': 'https://www.giavang247.online/phan-tich'
         }
       ]
     }
@@ -197,27 +197,27 @@ const generateArticleStructuredData = (article: any) => {
       '@type': 'Article',
       'headline': article.title,
       'description': article.summary,
-      'image': 'https://giavang247.online/og-image.png',
+      'image': 'https://www.giavang247.online/og-image.png',
       'datePublished': article.date,
       'dateModified': article.date,
       'author': {
         '@type': 'Organization',
         'name': 'GiaVang247',
-        'url': 'https://giavang247.online/'
+        'url': 'https://www.giavang247.online/'
       },
       'publisher': {
         '@type': 'Organization',
         'name': 'GiaVang247',
         'logo': {
           '@type': 'ImageObject',
-          'url': 'https://giavang247.online/logo.png',
+          'url': 'https://www.giavang247.online/logo.png',
           'width': '180',
           'height': '60'
         }
       },
       'mainEntityOfPage': {
         '@type': 'WebPage',
-        '@id': `https://giavang247.online/phan-tich/bai-viet/${article.id}`
+        '@id': `https://www.giavang247.online/phan-tich/bai-viet/${article.id}`
       }
     },
     breadcrumb: {
@@ -228,19 +228,19 @@ const generateArticleStructuredData = (article: any) => {
           '@type': 'ListItem',
           'position': 1,
           'name': 'Trang Chủ',
-          'item': 'https://giavang247.online/'
+          'item': 'https://www.giavang247.online/'
         },
         {
           '@type': 'ListItem',
           'position': 2,
           'name': 'Phân Tích',
-          'item': 'https://giavang247.online/phan-tich'
+          'item': 'https://www.giavang247.online/phan-tich'
         },
         {
           '@type': 'ListItem',
           'position': 3,
           'name': article.title,
-          'item': `https://giavang247.online/phan-tich/bai-viet/${article.id}`
+          'item': `https://www.giavang247.online/phan-tich/bai-viet/${article.id}`
         }
       ]
     }
@@ -261,13 +261,13 @@ const generateAboutStructuredData = () => {
           '@type': 'ListItem',
           'position': 1,
           'name': 'Trang Chủ',
-          'item': 'https://giavang247.online/'
+          'item': 'https://www.giavang247.online/'
         },
         {
           '@type': 'ListItem',
           'position': 2,
           'name': 'Giới Thiệu',
-          'item': 'https://giavang247.online/gioi-thieu'
+          'item': 'https://www.giavang247.online/gioi-thieu'
         }
       ]
     },
@@ -275,10 +275,10 @@ const generateAboutStructuredData = () => {
       '@context': 'https://schema.org',
       '@type': 'Organization',
       'name': 'GiaVang247',
-      'url': 'https://giavang247.online/',
+      'url': 'https://www.giavang247.online/',
       'logo': {
         '@type': 'ImageObject',
-        'url': 'https://giavang247.online/logo.png',
+        'url': 'https://www.giavang247.online/logo.png',
         'width': '180',
         'height': '60'
       },
@@ -324,13 +324,13 @@ const generateContactStructuredData = () => {
           '@type': 'ListItem',
           'position': 1,
           'name': 'Trang Chủ',
-          'item': 'https://giavang247.online/'
+          'item': 'https://www.giavang247.online/'
         },
         {
           '@type': 'ListItem',
           'position': 2,
           'name': 'Liên Hệ',
-          'item': 'https://giavang247.online/lien-he'
+          'item': 'https://www.giavang247.online/lien-he'
         }
       ]
     },
@@ -339,7 +339,7 @@ const generateContactStructuredData = () => {
       '@type': 'ContactPage',
       'name': 'Liên Hệ GiaVang247',
       'description': 'Liên hệ với GiaVang247 - Chuyên trang thông tin uy tín về giá vàng Việt Nam.',
-      'url': 'https://giavang247.online/lien-he',
+      'url': 'https://www.giavang247.online/lien-he',
       'mainEntity': {
         '@type': 'Organization',
         'name': 'GiaVang247',
