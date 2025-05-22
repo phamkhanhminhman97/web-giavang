@@ -6,22 +6,18 @@ import MarketTrend from "@/components/MarketTrend";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Share2, Bell, ArrowRight, HelpCircle, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Share2, Bell, ArrowRight, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import FaqItem from "@/components/FaqItem";
+import { useFormattedDate } from "@/hooks/use-formatted-date";
+import { useScrollEffect } from "@/hooks/use-scroll-effect";
 
 const Index = () => {
   const [timeFilter, setTimeFilter] = useState("today");
-  const [scrolled, setScrolled] = useState(false);
+  const scrolled = useScrollEffect(50);
   
-  // Add scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Use our custom hook for formatted date/time
+  const { formattedDateTime } = useFormattedDate();
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-gold-muted/5">
@@ -45,11 +41,17 @@ const Index = () => {
               <div className="hidden md:block absolute -bottom-2 left-0 w-1/2 h-0.5 bg-gradient-to-r from-gold-dark to-transparent"></div>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-gold-light/50 text-sm font-medium text-slate-700 hover:bg-gold-light/10 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gold">
+              <button 
+                className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-gold-light/50 text-sm font-medium text-slate-700 hover:bg-gold-light/10 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gold"
+                aria-label="Chia sẻ thông tin giá vàng"
+              >
                 <Share2 size={16} className="text-gold-dark" />
                 <span>Chia sẻ</span>
               </button>
-              <button className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-gold-light/50 text-sm font-medium text-slate-700 hover:bg-gold-light/10 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gold">
+              <button 
+                className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-gold-light/50 text-sm font-medium text-slate-700 hover:bg-gold-light/10 transition-all duration-300 shadow-sm hover:shadow-md hover:border-gold"
+                aria-label="Đăng ký nhận thông báo giá vàng"
+              >
                 <Bell size={16} className="text-gold-dark" />
                 <span>Thông báo</span>
               </button>
@@ -78,10 +80,28 @@ const Index = () => {
               </div>
               <div className="bg-white/90 backdrop-blur-sm rounded-full p-1 border border-gold-light/30 shadow-md">
                 <Tabs defaultValue="today" value={timeFilter} onValueChange={setTimeFilter}>
-                  <TabsList className="bg-gold-muted/20">
-                    <TabsTrigger value="today" className="text-xs md:text-sm font-medium">Hôm nay</TabsTrigger>
-                    <TabsTrigger value="week" className="text-xs md:text-sm font-medium">Tuần này</TabsTrigger>
-                    <TabsTrigger value="month" className="text-xs md:text-sm font-medium">Tháng này</TabsTrigger>
+                  <TabsList className="bg-gold-muted/20" aria-label="Chọn khoảng thời gian">
+                    <TabsTrigger 
+                      value="today" 
+                      className="text-xs md:text-sm font-medium"
+                      aria-label="Xem giá vàng hôm nay"
+                    >
+                      Hôm nay
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="week" 
+                      className="text-xs md:text-sm font-medium"
+                      aria-label="Xem giá vàng tuần này"
+                    >
+                      Tuần này
+                    </TabsTrigger>
+                    <TabsTrigger 
+                      value="month" 
+                      className="text-xs md:text-sm font-medium"
+                      aria-label="Xem giá vàng tháng này"
+                    >
+                      Tháng này
+                    </TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>
@@ -89,7 +109,7 @@ const Index = () => {
             <GoldTabs />
             <div className="text-right mt-6">
               <p className="text-xs text-slate-500 italic">Nguồn: SJC, DOJI, PNJ, BTMC, Mi Hồng, Phú Quý, Huy Thanh</p>
-              <p className="text-xs text-slate-500">Cập nhật: {new Date().toLocaleString('vi-VN')}</p>
+              <p className="text-xs text-slate-500">Cập nhật: {formattedDateTime}</p>
             </div>
           </div>
           
@@ -109,16 +129,20 @@ const Index = () => {
                 <MarketTrend />
               </div>
               <div className="text-center mt-8">
-                <a href="/phan-tich" className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-gold-dark to-gold text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 font-medium">
+                <a 
+                  href="/phan-tich" 
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-gold-dark to-gold text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 font-medium"
+                  aria-label="Xem thêm phân tích chuyên sâu về thị trường vàng"
+                >
                   Xem thêm phân tích chuyên sâu
-                  <ChevronRight size={16} />
+                  <ChevronRight size={16} aria-hidden="true" />
                 </a>
               </div>
             </div>
           </div>
           
           {/* FAQ Section */}
-          <div className="mb-16 bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gold-light/30">
+          <div className="mb-16 bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gold-light/30" id="faq-section">
             <div className="flex flex-col items-center mb-8">
               <h2 className="text-2xl md:text-3xl font-bold mb-3 font-playfair text-center">
                 <span className="bg-gradient-to-r from-gold-dark via-amber-600 to-gold bg-clip-text text-transparent">
@@ -154,9 +178,13 @@ const Index = () => {
                 <input 
                   type="email" 
                   placeholder="Email của bạn" 
+                  aria-label="Email của bạn"
                   className="px-5 py-3 border border-gold-light/50 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-gold-light w-full md:w-auto shadow-inner"
                 />
-                <button className="bg-gradient-luxury text-white px-6 py-3 rounded-r-lg font-medium hover:shadow-lg transition-all duration-300">
+                <button 
+                  className="bg-gradient-luxury text-white px-6 py-3 rounded-r-lg font-medium hover:shadow-lg transition-all duration-300"
+                  aria-label="Đăng ký nhận thông báo"
+                >
                   Đăng ký
                 </button>
               </div>
@@ -170,36 +198,5 @@ const Index = () => {
   );
 };
 
-// FAQ Item Component
-const FaqItem = ({ question, answer }: { question: string; answer: string }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
-  return (
-    <div className="border border-gold-light/30 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-      <button 
-        className="w-full flex items-center justify-between p-5 text-left bg-gold-muted/5 hover:bg-gold-muted/10 transition-all duration-300"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <div className="flex items-center">
-          <div className="bg-gradient-to-br from-gold-dark to-gold p-1.5 rounded-full text-white mr-3 flex-shrink-0">
-            <HelpCircle size={16} />
-          </div>
-          <h3 className="font-medium text-slate-800">{question}</h3>
-        </div>
-        <div className={`w-6 h-6 flex items-center justify-center rounded-full border border-gold-light/50 text-gold-dark transition-transform duration-300 ${isOpen ? 'rotate-180 bg-gold-light/10' : ''}`}>
-          {isOpen ? '−' : '+'}
-        </div>
-      </button>
-      {isOpen && (
-        <div className="p-6 bg-white/80 border-t border-gold-light/20">
-          <p className="text-slate-700 leading-relaxed">{answer}</p>
-          <div className="mt-4 pt-3 border-t border-dashed border-gold-light/30 flex justify-end">
-            <span className="text-xs text-gold-dark/70 italic">Cập nhật: {new Date().toLocaleDateString('vi-VN')}</span>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 export default Index;
