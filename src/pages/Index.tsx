@@ -38,7 +38,7 @@ const Index = () => {
             <div className="relative">
               <h1 className="text-3xl md:text-5xl font-bold font-playfair mb-4 sm:mb-0">
                 <span className="bg-gradient-to-r from-gold-dark via-amber-600 to-gold bg-clip-text text-transparent">
-                  Giá Vàng Hôm Nay
+                  Giá Vàng 247 Online, Cập Nhật 24/7
                 </span>
               </h1>
               <div className="hidden md:block absolute -bottom-2 left-0 w-1/2 h-0.5 bg-gradient-to-r from-gold-dark to-transparent"></div>

@@ -14,7 +14,7 @@
 export const generateMetaTags = (pageName: string, customData?: any) => {
   const baseUrl = 'https://www.giavang247.online';
   const defaultDescription = 'Cập nhật giá vàng Việt Nam SJC, DOJI, PNJ, Bảo Tín Minh Châu, Mi Hồng, Phú Quý, Huy Thanh mới nhất 24/7. Thông tin thị trường vàng chính xác, nhanh chóng, tin cậy mỗi ngày.';
-  const defaultKeywords = 'giá vàng, vàng SJC, vàng DOJI, vàng PNJ, vàng Bảo Tín Minh Châu, vàng Mi Hồng, vàng Phú Quý, vàng Huy Thanh, giá vàng hôm nay, giá vàng 24/7';
+  const defaultKeywords = 'giá vàng, vàng SJC, vàng DOJI, vàng PNJ, vàng Bảo Tín Minh Châu, vàng Mi Hồng, vàng Phú Quý, vàng Huy Thanh, giá vàng hôm nay, giá vàng 24/7, giá vàng 247 online, gia vang 247 online';
   const defaultImage = `${baseUrl}/og-image.png`;
   
   // Default meta tags
@@ -38,7 +38,14 @@ export const generateMetaTags = (pageName: string, customData?: any) => {
   // Page-specific meta tags
   switch (pageName) {
     case 'home':
-      // Home page meta tags are already set as default
+      metaTags.title = 'Giá Vàng 247 Online - Cập nhật giá vàng SJC, DOJI, PNJ, Bảo Tín Minh Châu mới nhất 24/7';
+      metaTags.description = 'GiaVang247 Online - Trang cập nhật giá vàng 247 online, giá vàng SJC, DOJI, PNJ, Bảo Tín Minh Châu, Mi Hồng, Phú Quý, Huy Thanh mới nhất 24/7. Thông tin thị trường vàng chính xác, nhanh chóng.';
+      metaTags.keywords = `${defaultKeywords}, giá vàng 247 online, gia vang 247 online`;
+      metaTags.canonical = baseUrl;
+      metaTags.ogTitle = 'Giá Vàng 247 Online - Cập nhật giá vàng SJC, DOJI, PNJ, Bảo Tín Minh Châu mới nhất 24/7';
+      metaTags.ogDescription = 'GiaVang247 Online - Trang cập nhật giá vàng 247 online, giá vàng SJC, DOJI, PNJ, Bảo Tín Minh Châu, Mi Hồng, Phú Quý, Huy Thanh mới nhất 24/7.';
+      metaTags.twitterTitle = 'Giá Vàng 247 Online - Cập nhật giá vàng mới nhất các thương hiệu uy tín';
+      metaTags.twitterDescription = 'GiaVang247 Online - Trang cập nhật giá vàng 247 online, giá vàng SJC, DOJI, PNJ, Bảo Tín Minh Châu, Mi Hồng, Phú Quý, Huy Thanh mới nhất 24/7.';
       metaTags.structuredData = generateHomeStructuredData();
       break;
       

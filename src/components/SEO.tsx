@@ -55,7 +55,7 @@ const SEO = ({
   videoContent
 }: SEOProps) => {
   // Enhance keywords with high-volume search terms based on Google Trends and Search Console insights
-  const highVolumeKeywords = 'giá vàng hôm nay, giá vàng SJC, giá vàng 9999, giá vàng DOJI, giá vàng 247, giá vàng thế giới, giá vàng miếng, giá vàng nhẫn, giá vàng trang sức';
+  const highVolumeKeywords = 'giá vàng hôm nay, giá vàng SJC, giá vàng 9999, giá vàng DOJI, giá vàng 247, giá vàng 247 online, gia vang 247 online, giá vàng thế giới, giá vàng miếng, giá vàng nhẫn, giá vàng trang sức';
   const metaTags = generateMetaTags(pageName, customData);
   
   // Enhance keywords with high-volume search terms

@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -73,6 +72,21 @@ const PriceChart = ({
     fetchData();
   }, [timeRange, vendor, goldType]);
   
+  // Tính toán min/max động cho trục Y để zoom vào vùng biến động
+  const yDomain = useMemo<[number, number]>(() => {
+    if (!chartData.length) return [0, 1];
+    let min = Math.min(
+      ...chartData.map((d) => Math.min(d.buyPrice, d.sellPrice))
+    );
+    let max = Math.max(
+      ...chartData.map((d) => Math.max(d.buyPrice, d.sellPrice))
+    );
+    // Thêm padding ±0.5 triệu
+    min = Math.floor((min - 500000) / 1000000) * 1000000;
+    max = Math.ceil((max + 500000) / 1000000) * 1000000;
+    return [min, max];
+  }, [chartData]);
+  
   return (
     <Card className="price-card">
       <CardContent className="p-6">
@@ -122,6 +136,7 @@ const PriceChart = ({
                   tickLine={false}
                   tick={{ fontSize: 12, fill: '#64748B' }}
                   width={60}
+                  domain={yDomain}
                 />
                 <Tooltip 
                   formatter={(value: number) => [`${formatPrice(value)} triệu`, '']}
