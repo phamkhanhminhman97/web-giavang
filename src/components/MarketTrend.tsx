@@ -1,37 +1,98 @@
 
 import { Card, CardContent } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { fetchMarketAnalysis, MarketAnalysis } from "@/services/market-analysis";
 
 const MarketTrend = () => {
+  const [analysis, setAnalysis] = useState<MarketAnalysis | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getAnalysis = async () => {
+      setLoading(true);
+      try {
+        const response = await fetchMarketAnalysis();
+        if (response.success && response.data) {
+          setAnalysis(response.data);
+        } else {
+          setError(response.error || 'Failed to load market analysis');
+        }
+      } catch (err) {
+        setError('Error loading market analysis');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getAnalysis();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="price-card lg:col-span-2">
+          <CardContent className="p-6 animate-pulse">
+            <div className="h-6 bg-slate-200 rounded w-1/3 mb-4"></div>
+            <div className="h-4 bg-slate-200 rounded w-full mb-2"></div>
+            <div className="h-4 bg-slate-200 rounded w-full mb-2"></div>
+            <div className="h-4 bg-slate-200 rounded w-3/4 mb-4"></div>
+            <div className="space-y-3">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="flex items-center space-x-2">
+                  <div className="h-4 w-4 bg-slate-200 rounded-full"></div>
+                  <div className="h-4 bg-slate-200 rounded w-full"></div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="price-card">
+          <CardContent className="p-6 animate-pulse">
+            <div className="h-6 bg-slate-200 rounded w-1/2 mb-4"></div>
+            <div className="space-y-4">
+              {[1, 2, 3].map(i => (
+                <div key={i} className="h-16 bg-slate-200 rounded"></div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error || !analysis) {
+    return (
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="price-card lg:col-span-3">
+          <CardContent className="p-6 text-center">
+            <p className="text-red-500">
+              {error || 'Unable to load market analysis. Please try again later.'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <Card className="price-card lg:col-span-2">
         <CardContent className="p-6">
-          <h3 className="text-xl font-semibold mb-4 font-playfair">Xu Hướng Thị Trường</h3>
+          <h3 className="text-xl font-semibold mb-4 font-playfair">{analysis.marketTrend.title}</h3>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700">
-              Thị trường vàng trong nước tiếp tục duy trì sự ổn định so với tuần trước, trong khi giá vàng quốc tế có xu hướng tăng nhẹ. Các yếu tố chính ảnh hưởng đến thị trường hiện tại:
+              {analysis.marketTrend.description}
             </p>
             <ul className="mt-4 space-y-2">
-              <TrendItem
-                text="USD Index đang giảm nhẹ, tạo điều kiện thuận lợi cho giá vàng tăng."
-                trend="positive"
-              />
-              <TrendItem
-                text="Tình hình địa chính trị tại một số khu vực vẫn căng thẳng, khiến nhà đầu tư tìm đến vàng như kênh trú ẩn an toàn."
-                trend="positive"
-              />
-              <TrendItem
-                text="Lãi suất ngân hàng đang ở mức thấp, khuyến khích dòng tiền chuyển sang kênh đầu tư vàng."
-                trend="positive"
-              />
-              <TrendItem
-                text="Chênh lệch giữa giá vàng trong nước và quốc tế vẫn duy trì ở mức cao."
-                trend="neutral"
-              />
-              <TrendItem
-                text="Khả năng Fed tăng lãi suất trong các cuộc họp tới có thể tạo áp lực lên giá vàng."
-                trend="negative"
-              />
+              {analysis.marketTrend.factors.map((factor, index) => (
+                <TrendItem
+                  key={index}
+                  text={factor.text}
+                  trend={factor.impact}
+                />
+              ))}
             </ul>
           </div>
         </CardContent>
@@ -41,15 +102,24 @@ const MarketTrend = () => {
         <CardContent className="p-6">
           <h3 className="text-xl font-semibold mb-4 font-playfair">Dự Báo Giá Vàng</h3>
           <div className="space-y-4">
-            <ForecastItem period="Ngắn hạn (1-7 ngày)" forecast="Tăng nhẹ" />
-            <ForecastItem period="Trung hạn (1-4 tuần)" forecast="Ổn định" />
-            <ForecastItem period="Dài hạn (1-3 tháng)" forecast="Tăng" />
+            <ForecastItem 
+              period={analysis.forecast.shortTerm.title} 
+              forecast={getTrendText(analysis.forecast.shortTerm.trend)} 
+            />
+            <ForecastItem 
+              period={analysis.forecast.midTerm.title} 
+              forecast={getTrendText(analysis.forecast.midTerm.trend)} 
+            />
+            <ForecastItem 
+              period={analysis.forecast.longTerm.title} 
+              forecast={getTrendText(analysis.forecast.longTerm.trend)} 
+            />
           </div>
           
           <div className="mt-6 bg-gold-muted p-4 rounded-lg">
-            <h4 className="font-medium text-gold-dark mb-2">Lưu ý đầu tư</h4>
+            <h4 className="font-medium text-gold-dark mb-2">{analysis.investmentTips.title}</h4>
             <p className="text-sm text-slate-700">
-              Các nhà đầu tư nên theo dõi sát diễn biến thị trường, đặc biệt là các động thái từ Fed và tình hình địa chính trị toàn cầu. Cân nhắc chiến lược phân bổ tài sản hợp lý và không nên tập trung quá nhiều vào một kênh đầu tư.
+              {analysis.investmentTips.description}
             </p>
           </div>
         </CardContent>
@@ -61,6 +131,16 @@ const MarketTrend = () => {
 type TrendItemProps = {
   text: string;
   trend: "positive" | "negative" | "neutral";
+};
+
+// Helper function to convert trend to text
+const getTrendText = (trend: 'up' | 'down' | 'stable'): string => {
+  switch (trend) {
+    case 'up': return 'Tăng';
+    case 'down': return 'Giảm';
+    case 'stable': return 'Ổn định';
+    default: return 'Ổn định';
+  }
 };
 
 const TrendItem = ({ text, trend }: TrendItemProps) => {
