@@ -5,12 +5,14 @@ import PriceInfo from "@/components/PriceInfo";
 import MarketTrend from "@/components/MarketTrend";
 import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
+import GoldComparison from "@/components/GoldComparison";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Share2, Bell, ArrowRight, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import FaqItem from "@/components/FaqItem";
 import { useFormattedDate } from "@/hooks/use-formatted-date";
 import { useScrollEffect } from "@/hooks/use-scroll-effect";
+import { GoldPriceProvider } from "@/contexts/GoldPriceContext";
 
 const Index = () => {
   const [timeFilter, setTimeFilter] = useState("today");
@@ -20,7 +22,8 @@ const Index = () => {
   const { formattedDateTime } = useFormattedDate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-gold-muted/5">
+    <GoldPriceProvider>
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-gold-muted/5">
       <SEO pageName="home" />
       <Navbar />
       
@@ -113,6 +116,27 @@ const Index = () => {
             </div>
           </div>
           
+          {/* Gold Comparison Tool - Unique Feature */}
+          <div className="mb-16 relative">
+            <div className="absolute -top-20 -left-20 bg-gradient-rich h-60 w-60 rounded-full blur-3xl opacity-20"></div>
+            <div className="absolute -bottom-20 -right-20 bg-gradient-rich h-60 w-60 rounded-full blur-3xl opacity-20"></div>
+            <div className="relative z-10 transform hover:scale-[1.01] transition-transform duration-500">
+              <div className="flex flex-col items-center mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold mb-3 font-playfair text-center">
+                  <span className="bg-gradient-to-r from-gold-dark via-amber-600 to-gold bg-clip-text text-transparent">
+                    Công Cụ So Sánh Giá Vàng
+                  </span>
+                </h2>
+                <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold-dark to-transparent"></div>
+                <p className="text-slate-600 mt-3 text-center max-w-2xl">
+                  Tính năng độc đáo giúp bạn so sánh giá vàng giữa các đơn vị kinh doanh, 
+                  loại vàng khác nhau hoặc theo dõi biến động giá qua thời gian
+                </p>
+              </div>
+              <GoldComparison />
+            </div>
+          </div>
+          
           {/* Market Analysis */}
           <div className="mb-16 relative">
             <div className="absolute -bottom-10 right-10 bg-gradient-rich h-40 w-40 rounded-full blur-2xl opacity-20"></div>
@@ -193,8 +217,9 @@ const Index = () => {
         </div>
       </main>
       
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </GoldPriceProvider>
   );
 };
 

@@ -1,34 +1,87 @@
 
 import { Card } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import { useGoldPrices } from "@/contexts/GoldPriceContext";
 
 const PriceInfo = () => {
+  const { goldPrices, loading, error } = useGoldPrices();
+  const [sjcPrice, setSjcPrice] = useState<number | null>(null);
+  const [sjcChange, setSjcChange] = useState<number>(0);
+  const [dojiPrice, setDojiPrice] = useState<number | null>(null);
+  const [dojiChange, setDojiChange] = useState<number>(0);
+  // USD/VND exchange rate (static for now, could be fetched from an API)
+  const [usdRate, setUsdRate] = useState<number>(24850);
+  const [usdChange, setUsdChange] = useState<number>(-0.12);
+
+  // Process gold price data from context
+  useEffect(() => {
+    if (goldPrices.length > 0) {
+      // Process SJC data
+      const sjcData = goldPrices.find(item => 
+        item.provider.toUpperCase() === 'SJC' && item.type.includes('SJC')
+      );
+      if (sjcData) {
+        setSjcPrice(sjcData.sellPrice);
+        setSjcChange(sjcData.change.sell);
+      }
+      
+      // Process DOJI data
+      const dojiData = goldPrices.find(item => 
+        item.provider.toUpperCase() === 'DOJI' && item.type.includes('SJC')
+      );
+      if (dojiData) {
+        setDojiPrice(dojiData.sellPrice);
+        setDojiChange(dojiData.change.sell);
+      }
+    }
+  }, [goldPrices]);
+
+  // Format price to Vietnamese currency
+  const formatPrice = (price: number | null) => {
+    if (price === null) return "Đang cập nhật";
+    return new Intl.NumberFormat('vi-VN').format(price);
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <InfoCard
-        title="Vàng Quốc Tế"
-        value="$2,345.67"
-        change={0.25}
-        trend="up"
-      />
-      <InfoCard
-        title="USD/VND"
-        value="24,850"
-        change={-0.12}
-        trend="down"
-      />
-      <InfoCard
-        title="Vàng SJC/Thế Giới"
-        value="+ 650,000"
-        change={0.31}
-        trend="up"
-        suffix="VND/chỉ"
-      />
-      <InfoCard
-        title="Dự Báo Giá"
-        value="Tăng nhẹ"
-        badgeText="24h tới"
-        badgeColor="yellow"
-      />
+      {loading ? (
+        <div className="col-span-4 flex justify-center items-center h-40">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-dark"></div>
+        </div>
+      ) : error ? (
+        <div className="col-span-4 text-red-500 text-center p-4">
+          {error}
+        </div>
+      ) : (
+        <>
+          <InfoCard
+            title="Giá Vàng SJC"
+            value={`${formatPrice(sjcPrice)}`}
+            change={sjcChange}
+            trend={sjcChange > 0 ? "up" : sjcChange < 0 ? "down" : "neutral"}
+            suffix="VND/lượng"
+          />
+          <InfoCard
+            title="Giá Vàng DOJI"
+            value={`${formatPrice(dojiPrice)}`}
+            change={dojiChange}
+            trend={dojiChange > 0 ? "up" : dojiChange < 0 ? "down" : "neutral"}
+            suffix="VND/lượng"
+          />
+          <InfoCard
+            title="USD/VND"
+            value={formatPrice(usdRate)}
+            change={usdChange}
+            trend={usdChange > 0 ? "up" : usdChange < 0 ? "down" : "neutral"}
+          />
+          <InfoCard
+            title="Dự Báo Giá"
+            value="Tăng nhẹ"
+            badgeText="24h tới"
+            badgeColor="yellow"
+          />
+        </>
+      )}
     </div>
   );
 };

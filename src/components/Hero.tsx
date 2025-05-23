@@ -1,5 +1,6 @@
 import { Clock, TrendingUp, TrendingDown } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useGoldPrices } from "@/contexts/GoldPriceContext";
 
 const Hero = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
@@ -7,6 +8,18 @@ const Hero = () => {
     price: "2,345.67",
     change: 0.25,
     trend: "up" as "up" | "down"
+  });
+  const { goldPrices, loading, error } = useGoldPrices();
+  const [goldPriceCards, setGoldPriceCards] = useState<{
+    sjc: { value: string; change: string; trend: 'up' | 'down' };
+    doji: { value: string; change: string; trend: 'up' | 'down' };
+    pnj: { value: string; change: string; trend: 'up' | 'down' };
+    btmc: { value: string; change: string; trend: 'up' | 'down' };
+  }>({
+    sjc: { value: "Đang cập nhật", change: "0%", trend: "up" },
+    doji: { value: "Đang cập nhật", change: "0%", trend: "up" },
+    pnj: { value: "Đang cập nhật", change: "0%", trend: "up" },
+    btmc: { value: "Đang cập nhật", change: "0%", trend: "up" }
   });
 
   useEffect(() => {
@@ -16,6 +29,66 @@ const Hero = () => {
 
     return () => clearInterval(timer);
   }, []);
+
+  // Format price to Vietnamese currency
+  const formatPrice = (price: number | null) => {
+    if (price === null) return "Đang cập nhật";
+    return new Intl.NumberFormat('vi-VN').format(price);
+  };
+
+  // Format percentage change
+  const formatChange = (change: number) => {
+    return `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
+  };
+
+  // Process gold price data from context
+  useEffect(() => {
+    if (goldPrices.length > 0) {
+      // Process SJC data
+      const sjcData = goldPrices.find(item => 
+        item.provider.toUpperCase() === 'SJC' && item.type.includes('SJC')
+      );
+      
+      // Process DOJI data
+      const dojiData = goldPrices.find(item => 
+        item.provider.toUpperCase() === 'DOJI' && item.type.includes('SJC')
+      );
+      
+      // Process PNJ data
+      const pnjData = goldPrices.find(item => 
+        item.provider.toUpperCase() === 'PNJ' && item.type.includes('SJC')
+      );
+      
+      // Process BTMC data
+      const btmcData = goldPrices.find(item => 
+        item.provider.toUpperCase() === 'BTMC' || item.provider.includes('BẢO TÍN MINH CHÂU')
+      );
+
+      // Update gold prices
+      setGoldPriceCards({
+        sjc: { 
+          value: sjcData ? formatPrice(sjcData.sellPrice) + 'đ' : "Đang cập nhật", 
+          change: sjcData ? formatChange(sjcData.change.sell) : "0%",
+          trend: sjcData ? (sjcData.change.sell >= 0 ? 'up' : 'down') : 'up'
+        },
+        doji: { 
+          value: dojiData ? formatPrice(dojiData.sellPrice) + 'đ' : "Đang cập nhật", 
+          change: dojiData ? formatChange(dojiData.change.sell) : "0%",
+          trend: dojiData ? (dojiData.change.sell >= 0 ? 'up' : 'down') : 'up'
+        },
+        pnj: { 
+          value: pnjData ? formatPrice(pnjData.sellPrice) + 'đ' : "Đang cập nhật", 
+          change: pnjData ? formatChange(pnjData.change.sell) : "0%",
+          trend: pnjData ? (pnjData.change.sell >= 0 ? 'up' : 'down') : 'up'
+        },
+        btmc: { 
+          value: btmcData ? formatPrice(btmcData.sellPrice) + 'đ' : "Đang cập nhật", 
+          change: btmcData ? formatChange(btmcData.change.sell) : "0%",
+          trend: btmcData ? (btmcData.change.sell >= 0 ? 'up' : 'down') : 'up'
+        }
+      });
+    }
+  }, [goldPrices]);
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString('vi-VN', {
@@ -72,10 +145,22 @@ const Hero = () => {
           
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto mb-6">
-            <QuickStat label="Vàng SJC" value="80,900,000đ" change="+2.1%" trend="up" />
-            <QuickStat label="Vàng DOJI" value="80,850,000đ" change="+2.0%" trend="up" />
-            <QuickStat label="Vàng PNJ" value="80,800,000đ" change="+1.9%" trend="up" />
-            <QuickStat label="Vàng BTMC" value="80,750,000đ" change="+1.8%" trend="up" />
+            {loading ? (
+              <div className="col-span-4 flex justify-center items-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold-dark"></div>
+              </div>
+            ) : error ? (
+              <div className="col-span-4 text-red-500 text-center py-4">
+                {error}
+              </div>
+            ) : (
+              <>
+                <QuickStat label="Vàng SJC" value={goldPriceCards.sjc.value} change={goldPriceCards.sjc.change} trend={goldPriceCards.sjc.trend} />
+                <QuickStat label="Vàng DOJI" value={goldPriceCards.doji.value} change={goldPriceCards.doji.change} trend={goldPriceCards.doji.trend} />
+                <QuickStat label="Vàng PNJ" value={goldPriceCards.pnj.value} change={goldPriceCards.pnj.change} trend={goldPriceCards.pnj.trend} />
+                <QuickStat label="Vàng BTMC" value={goldPriceCards.btmc.value} change={goldPriceCards.btmc.change} trend={goldPriceCards.btmc.trend} />
+              </>
+            )}
           </div>
           
           <div className="inline-block bg-gradient-luxury py-2 px-6 rounded-full text-white text-sm shadow-md">
