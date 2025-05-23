@@ -20,7 +20,7 @@ interface Environment {
 
 // Default values for environment variables
 const defaultEnv: Environment = {
-  API_URL: 'http://localhost:3000',
+  API_URL: 'https://api.giavang247.online',
   API_TIMEOUT: 30000,
   ENABLE_ANALYTICS: false,
   ENABLE_NOTIFICATIONS: true,
@@ -32,7 +32,7 @@ const defaultEnv: Environment = {
   DEFAULT_VENDOR: 'PNJ',
   SITE_NAME: 'GiaVang247',
   SITE_DESCRIPTION: 'Cập nhật giá vàng SJC, DOJI, PNJ, Bảo Tín Minh Châu, Mi Hồng, Phú Quý, Huy Thanh mới nhất 24/7',
-  SITE_URL: 'https://giavang247.vn',
+  SITE_URL: 'https://giavang247.online',
 };
 
 // Get environment variables from import.meta.env
