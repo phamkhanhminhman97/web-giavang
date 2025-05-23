@@ -102,8 +102,10 @@ const GoldTabs = () => {
       );
     }
     
-    // Get gold types for this vendor (limit to 3)
-    const goldTypes = Object.keys(goldData[vendor]).slice(0, 3);
+    // Get gold types for this vendor with highest sell prices (limit to 3)
+    const goldTypes = Object.keys(goldData[vendor])
+      .sort((a, b) => goldData[vendor][b].sellPrice - goldData[vendor][a].sellPrice)
+      .slice(0, 3);
     
     return goldTypes.map((type, index) => {
       const data = goldData[vendor][type];
