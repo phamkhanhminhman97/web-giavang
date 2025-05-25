@@ -7,20 +7,80 @@ import Footer from "@/components/Footer";
 import SEO from "@/components/SEO";
 import GoldComparison from "@/components/GoldComparison";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Share2, Bell, ArrowRight, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { Share2, Bell, ArrowRight, ChevronRight, Search as SearchIcon } from "lucide-react";
+import { useState, useEffect } from "react";
 import FaqItem from "@/components/FaqItem";
 import { useFormattedDate } from "@/hooks/use-formatted-date";
 import { useScrollEffect } from "@/hooks/use-scroll-effect";
 import { GoldPriceProvider } from "@/contexts/GoldPriceContext";
+import { useSearchParams } from "react-router-dom";
 
 const Index = () => {
   const [timeFilter, setTimeFilter] = useState("today");
   const scrolled = useScrollEffect(50);
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q");
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   
   // Use our custom hook for formatted date/time
   const { formattedDateTime } = useFormattedDate();
 
+  // Handle search functionality
+  useEffect(() => {
+    if (searchQuery) {
+      setLoading(true);
+      
+      // In a real implementation, you would fetch search results from an API
+      // For now, we'll just simulate a delay and return empty results
+      const timer = setTimeout(() => {
+        setSearchResults([]);
+        setLoading(false);
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [searchQuery]);
+
+  // If there's a search query, show search results
+  if (searchQuery) {
+    return (
+      <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-gold-muted/5">
+        <SEO pageName="home" />
+        <Navbar />
+        
+        <main className="flex-grow">
+          <div className="container mx-auto px-4 py-8">
+            <h1 className="text-2xl font-bold mb-6">Kết quả tìm kiếm cho: "{searchQuery}"</h1>
+
+            {loading ? (
+              <div className="flex justify-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-dark"></div>
+              </div>
+            ) : searchResults.length > 0 ? (
+              <div className="space-y-6">
+                {searchResults.map((result, index) => (
+                  <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <h2 className="text-lg font-semibold text-gold-dark">{result.title}</h2>
+                    <p className="text-gray-600 mt-2">{result.description}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-lg text-gray-600">Không tìm thấy kết quả nào cho "{searchQuery}"</p>
+                <p className="mt-4">Vui lòng thử lại với từ khóa khác hoặc quay lại trang chủ.</p>
+              </div>
+            )}
+          </div>
+        </main>
+        
+        <Footer />
+      </div>
+    );
+  }
+
+  // Regular home page content
   return (
     <GoldPriceProvider>
       <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-gold-muted/5">

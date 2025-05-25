@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import PhanTich from "./pages/PhanTich";
@@ -17,6 +17,7 @@ import Disclaimer from "./pages/Disclaimer";
 import AITools from "./pages/AITools";
 import GeneratedContentList from "./pages/GeneratedContentList";
 import GeneratedContentDetail from "./pages/GeneratedContentDetail";
+import Search from "./pages/Search";
 import CookieConsent from './components/CookieConsent';
 
 const queryClient = new QueryClient();
@@ -31,16 +32,24 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/phan-tich" element={<PhanTich />} />
           <Route path="/phan-tich/bai-viet/:id" element={<ArticleDetail />} />
-          <Route path="/gioi-thieu" element={<GioiThieu />} />
-          <Route path="/lien-he" element={<LienHe />} />
-          <Route path="/dieu-khoan" element={<DieuKhoan />} />
-          <Route path="/bao-mat" element={<BaoMat />} />
+          <Route path="/about" element={<GioiThieu />} />
+          <Route path="/contact" element={<LienHe />} />
+          <Route path="/terms" element={<DieuKhoan />} />
+          <Route path="/privacy-policy" element={<BaoMat />} />
           <Route path="/help" element={<Help />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/mien-tru" element={<Disclaimer />} />
           <Route path="/cong-cu-ai" element={<AITools />} />
           <Route path="/bai-viet" element={<GeneratedContentList />} />
           <Route path="/bai-viet/:slug" element={<GeneratedContentDetail />} />
+          
+          {/* Vietnamese URL redirects */}
+          <Route path="/gioi-thieu" element={<Navigate to="/about" replace />} />
+          <Route path="/lien-he" element={<Navigate to="/contact" replace />} />
+          <Route path="/dieu-khoan" element={<Navigate to="/terms" replace />} />
+          <Route path="/bao-mat" element={<Navigate to="/privacy-policy" replace />} />
+          {/* Search is now handled on the home page with ?q= parameter */}
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

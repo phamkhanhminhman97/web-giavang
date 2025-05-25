@@ -122,12 +122,12 @@ export const generateMetaTags = (pageName: string, customData?: any) => {
       }
       break;
       
-    case 'gioi-thieu':
+    case 'about':
       metaTags.title = 'Giới Thiệu | GiaVang247 - Chuyên Trang Thông Tin Giá Vàng Uy Tín';
       metaTags.description = 'GiaVang247 - Chuyên trang thông tin uy tín về giá vàng Việt Nam, cập nhật liên tục giá vàng SJC, DOJI, PNJ và các thương hiệu uy tín khác. Thông tin chính xác, phân tích chuyên sâu từ đội ngũ chuyên gia.';
       metaTags.keywords = 'giới thiệu giavang247, về chúng tôi, đội ngũ giavang247, thông tin giá vàng uy tín, chuyên trang giá vàng';
-      metaTags.canonical = `${baseUrl}/gioi-thieu`;
-      metaTags.ogUrl = `${baseUrl}/gioi-thieu`;
+      metaTags.canonical = `${baseUrl}/about`;
+      metaTags.ogUrl = `${baseUrl}/about`;
       metaTags.ogTitle = 'Giới Thiệu | GiaVang247 - Chuyên Trang Thông Tin Giá Vàng Uy Tín';
       metaTags.ogDescription = 'GiaVang247 - Chuyên trang thông tin uy tín về giá vàng Việt Nam, cập nhật liên tục giá vàng SJC, DOJI, PNJ và các thương hiệu uy tín khác.';
       metaTags.twitterTitle = 'Giới Thiệu | GiaVang247 - Chuyên Trang Thông Tin Giá Vàng Uy Tín';
@@ -135,12 +135,12 @@ export const generateMetaTags = (pageName: string, customData?: any) => {
       metaTags.structuredData = generateAboutStructuredData();
       break;
       
-    case 'lien-he':
+    case 'contact':
       metaTags.title = 'Liên Hệ | GiaVang247';
       metaTags.description = 'Liên hệ với GiaVang247 - Chuyên trang thông tin uy tín về giá vàng Việt Nam. Gửi thông tin phản hồi, góp ý hoặc yêu cầu hợp tác.';
       metaTags.keywords = 'liên hệ giavang247, góp ý giavang247, phản hồi giá vàng, hợp tác giavang247';
-      metaTags.canonical = `${baseUrl}/lien-he`;
-      metaTags.ogUrl = `${baseUrl}/lien-he`;
+      metaTags.canonical = `${baseUrl}/contact`;
+      metaTags.ogUrl = `${baseUrl}/contact`;
       metaTags.ogTitle = 'Liên Hệ | GiaVang247';
       metaTags.ogDescription = 'Liên hệ với GiaVang247 - Chuyên trang thông tin uy tín về giá vàng Việt Nam. Gửi thông tin phản hồi, góp ý hoặc yêu cầu hợp tác.';
       metaTags.twitterTitle = 'Liên Hệ | GiaVang247';
@@ -182,8 +182,8 @@ const generateHomeStructuredData = () => {
       'url': 'https://www.giavang247.online/',
       'potentialAction': {
         '@type': 'SearchAction',
-        'target': 'https://www.giavang247.online/search?q={search_term}',
-        'query-input': 'required name=search_term'
+        'target': 'https://www.giavang247.online/?q={search_term_string}',
+        'query-input': 'required name=search_term_string'
       },
       'description': 'Cập nhật giá vàng Việt Nam SJC, DOJI, PNJ, Bảo Tín Minh Châu, Mi Hồng, Phú Quý, Huy Thanh mới nhất 24/7. Thông tin thị trường vàng chính xác, nhanh chóng, tin cậy mỗi ngày.',
       'inLanguage': 'vi-VN'
@@ -520,7 +520,7 @@ const generateAboutStructuredData = () => {
           '@type': 'ListItem',
           'position': 2,
           'name': 'Giới Thiệu',
-          'item': 'https://www.giavang247.online/gioi-thieu'
+          'item': 'https://www.giavang247.online/about'
         }
       ]
     },
@@ -583,7 +583,7 @@ const generateContactStructuredData = () => {
           '@type': 'ListItem',
           'position': 2,
           'name': 'Liên Hệ',
-          'item': 'https://www.giavang247.online/lien-he'
+          'item': 'https://www.giavang247.online/contact'
         }
       ]
     },
@@ -592,7 +592,7 @@ const generateContactStructuredData = () => {
       '@type': 'ContactPage',
       'name': 'Liên Hệ GiaVang247',
       'description': 'Liên hệ với GiaVang247 - Chuyên trang thông tin uy tín về giá vàng Việt Nam.',
-      'url': 'https://www.giavang247.online/lien-he',
+      'url': 'https://www.giavang247.online/contact',
       'mainEntity': {
         '@type': 'Organization',
         'name': 'GiaVang247',

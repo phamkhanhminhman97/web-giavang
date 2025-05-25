@@ -1,11 +1,13 @@
 
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, Search as SearchIcon } from "lucide-react";
+import { useState, FormEvent } from "react";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -13,6 +15,17 @@ const Navbar = () => {
 
   const isActive = (path: string) => {
     return location.pathname === path;
+  };
+  
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+      if (mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    }
   };
 
   return (
@@ -27,7 +40,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-1">
+          <nav className="hidden md:flex items-center space-x-1">
             <Link
               to="/"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -69,9 +82,9 @@ const Navbar = () => {
               Bài Viết
             </Link>
             <Link
-              to="/gioi-thieu"
+              to="/about"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive("/gioi-thieu")
+                isActive("/about")
                   ? "text-gold-dark bg-gold-muted"
                   : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
               }`}
@@ -79,19 +92,37 @@ const Navbar = () => {
               Giới Thiệu
             </Link>
             <Link
-              to="/lien-he"
+              to="/contact"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                isActive("/lien-he")
+                isActive("/contact")
                   ? "text-gold-dark bg-gold-muted"
                   : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
               }`}
             >
               Liên Hệ
             </Link>
+            {/* Search Box (Desktop) */}
+            <form onSubmit={handleSearch} className="ml-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="py-1 pl-3 pr-8 text-sm border border-gold-light/50 rounded-md focus:outline-none focus:ring-1 focus:ring-gold-dark focus:border-gold-dark"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gold-dark"
+                >
+                  <SearchIcon size={16} />
+                </button>
+              </div>
+            </form>
           </nav>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center">
             <button
               type="button"
               className="text-slate-700 hover:text-gold-dark focus:outline-none"
@@ -153,9 +184,9 @@ const Navbar = () => {
               Bài Viết
             </Link>
             <Link
-              to="/gioi-thieu"
+              to="/about"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                isActive("/gioi-thieu")
+                isActive("/about")
                   ? "text-gold-dark bg-gold-muted"
                   : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
               }`}
@@ -164,9 +195,9 @@ const Navbar = () => {
               Giới Thiệu
             </Link>
             <Link
-              to="/lien-he"
+              to="/contact"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
-                isActive("/lien-he")
+                isActive("/contact")
                   ? "text-gold-dark bg-gold-muted"
                   : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
               }`}
@@ -176,19 +207,38 @@ const Navbar = () => {
             </Link>
             <div className="pt-2 pb-1 border-t border-gold-light/20 mt-2">
               <Link
-                to="/dieu-khoan"
+                to="/terms"
                 className="block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-gold-dark hover:bg-gold-muted/50"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Điều Khoản Sử Dụng
               </Link>
               <Link
-                to="/bao-mat"
+                to="/privacy-policy"
                 className="block px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-gold-dark hover:bg-gold-muted/50"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Chính Sách Bảo Mật
               </Link>
+              
+              {/* Search Box (Mobile) */}
+              <form onSubmit={handleSearch} className="px-3 py-3">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full py-2 pl-3 pr-10 text-sm border border-gold-light/50 rounded-md focus:outline-none focus:ring-1 focus:ring-gold-dark focus:border-gold-dark"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gold-dark"
+                  >
+                    <SearchIcon size={18} />
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
