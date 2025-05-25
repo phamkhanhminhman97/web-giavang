@@ -1,14 +1,18 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { BarChart, PieChart, Activity, TrendingUp, ArrowUpRight, ArrowDownRight, ChevronRight } from "lucide-react";
+import { BarChart, PieChart, Activity, TrendingUp, ArrowUpRight, ArrowDownRight, ChevronRight, Loader2 } from "lucide-react";
 import { articles } from "@/data/articles";
 import { useNavigate } from "react-router-dom";
 import SEO from "@/components/SEO";
 import { useState, useEffect } from "react";
+import { fetchMarketAnalysisForPhanTich, MarketAnalysisForPhanTichResponse } from "@/services/deepseek";
 
 const PhanTich = () => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const [marketAnalysis, setMarketAnalysis] = useState<MarketAnalysisForPhanTichResponse['data'] | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Add scroll effect
   useEffect(() => {
@@ -19,10 +23,37 @@ const PhanTich = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  
+  // Fetch market analysis data
+  useEffect(() => {
+    const getMarketAnalysis = async () => {
+      try {
+        setLoading(true);
+        const response = await fetchMarketAnalysisForPhanTich();
+        
+        if (response.success && response.data) {
+          setMarketAnalysis(response.data);
+          setError(null);
+        } else {
+          setError(response.error || 'Failed to fetch market analysis');
+        }
+      } catch (err) {
+        setError('An error occurred while fetching market analysis');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    getMarketAnalysis();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-gold-muted/5">
-      <SEO pageName="phan-tich" />
+      <SEO 
+        pageName="phan-tich" 
+        additionalKeywords="phân tích thị trường vàng, dự báo giá vàng hôm nay, xu hướng giá vàng, phân tích kỹ thuật vàng, phân tích cơ bản vàng"
+      />
       <Navbar />
       
       <main className="flex-grow">
@@ -67,89 +98,107 @@ const PhanTich = () => {
                 <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold-dark to-transparent"></div>
               </div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-md border border-gold-light/30 hover:shadow-lg transform hover:scale-[1.01] transition-all duration-500">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-gradient-to-br from-gold-dark to-gold p-2.5 rounded-full text-white">
-                      <BarChart className="text-white" size={24} />
-                    </div>
-                    <h2 className="text-xl font-bold font-playfair">Phân Tích Kỹ Thuật</h2>
+              {loading ? (
+                <div className="flex justify-center items-center py-16">
+                  <div className="flex flex-col items-center">
+                    <Loader2 className="h-12 w-12 text-gold-dark animate-spin mb-4" />
+                    <p className="text-slate-600">Đang tải phân tích thị trường...</p>
                   </div>
-                  <p className="text-slate-600 mb-4">
-                    Vàng đang trong xu hướng tăng giá với hỗ trợ mạnh ở mức 11.500.000 VNĐ/lượng. Các chỉ báo kỹ thuật như RSI và MACD đều cho thấy tín hiệu tích cực trong ngắn hạn.
-                  </p>
-                  <div className="bg-gradient-to-r from-gold-light/20 to-gold-muted/20 rounded-xl p-5 shadow-inner">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="font-medium">RSI (14)</span>
-                      <span className="text-green-600 font-medium">62.4</span>
+                </div>
+              ) : error ? (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+                  <p className="text-red-600 mb-2">Không thể tải phân tích thị trường</p>
+                  <p className="text-slate-600 text-sm">{error}</p>
+                </div>
+              ) : marketAnalysis ? (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Phân Tích Kỹ Thuật */}
+                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-md border border-gold-light/30 hover:shadow-lg transform hover:scale-[1.01] transition-all duration-500">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="bg-gradient-to-br from-gold-dark to-gold p-2.5 rounded-full text-white">
+                        <BarChart className="text-white" size={24} />
+                      </div>
+                      <h2 className="text-xl font-bold font-playfair">{marketAnalysis.technicalAnalysis.title}</h2>
                     </div>
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="font-medium">MACD</span>
-                      <span className="text-green-600 font-medium">Tích cực</span>
+                    <p className="text-slate-600 mb-4">
+                      {marketAnalysis.technicalAnalysis.description}
+                    </p>
+                    <div className="bg-gradient-to-r from-gold-light/20 to-gold-muted/20 rounded-xl p-5 shadow-inner">
+                      {marketAnalysis.technicalAnalysis.indicators.map((indicator, index) => (
+                        <div key={index} className="flex justify-between items-center mb-3 last:mb-0">
+                          <span className="font-medium">{indicator.name}</span>
+                          <span className={`font-medium ${
+                            indicator.interpretation === 'positive' ? 'text-green-600' : 
+                            indicator.interpretation === 'negative' ? 'text-red-600' : 'text-slate-600'
+                          }`}>
+                            {indicator.value}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">Bollinger Bands</span>
-                      <span className="text-slate-800 font-medium">Mở rộng</span>
+                  </div>
+                  
+                  {/* Phân Tích Cơ Bản */}
+                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-md border border-gold-light/30 hover:shadow-lg transform hover:scale-[1.01] transition-all duration-500">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="bg-gradient-to-br from-gold-dark to-gold p-2.5 rounded-full text-white">
+                        <PieChart className="text-white" size={24} />
+                      </div>
+                      <h2 className="text-xl font-bold font-playfair">{marketAnalysis.fundamentalAnalysis.title}</h2>
+                    </div>
+                    <p className="text-slate-600 mb-4">
+                      {marketAnalysis.fundamentalAnalysis.description}
+                    </p>
+                    <div className="bg-gradient-to-r from-gold-light/20 to-gold-muted/20 rounded-xl p-5 shadow-inner">
+                      {marketAnalysis.fundamentalAnalysis.factors.map((factor, index) => (
+                        <div key={index} className="flex justify-between items-center mb-3 last:mb-0">
+                          <span className="font-medium">{factor.name}</span>
+                          <span className={`font-medium ${
+                            factor.interpretation === 'positive' ? 'text-green-600' : 
+                            factor.interpretation === 'negative' ? 'text-red-600' : 'text-slate-600'
+                          } flex items-center`}>
+                            {factor.value}
+                            {factor.interpretation === 'positive' && <ArrowUpRight size={14} className="ml-1" />}
+                            {factor.interpretation === 'negative' && <ArrowDownRight size={14} className="ml-1" />}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Dự Báo Giá */}
+                  <div className="bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-md border border-gold-light/30 hover:shadow-lg transform hover:scale-[1.01] transition-all duration-500">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="bg-gradient-to-br from-gold-dark to-gold p-2.5 rounded-full text-white">
+                        <Activity className="text-white" size={24} />
+                      </div>
+                      <h2 className="text-xl font-bold font-playfair">{marketAnalysis.priceForecasts.title}</h2>
+                    </div>
+                    <p className="text-slate-600 mb-4">
+                      {marketAnalysis.priceForecasts.description}
+                    </p>
+                    <div className="bg-gradient-to-r from-gold-light/20 to-gold-muted/20 rounded-xl p-5 shadow-inner">
+                      {marketAnalysis.priceForecasts.forecasts.map((forecast, index) => (
+                        <div key={index} className="flex justify-between items-center mb-3 last:mb-0">
+                          <span className="font-medium">{forecast.timeframe}</span>
+                          <span className={`font-medium ${
+                            forecast.trend === 'up' ? 'text-green-600' : 
+                            forecast.trend === 'down' ? 'text-red-600' : 'text-slate-600'
+                          } flex items-center`}>
+                            {forecast.description}
+                            {forecast.trend === 'up' && <TrendingUp size={14} className="ml-1" />}
+                            {forecast.trend === 'down' && <ArrowDownRight size={14} className="ml-1" />}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-                
-                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-md border border-gold-light/30 hover:shadow-lg transform hover:scale-[1.01] transition-all duration-500">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-gradient-to-br from-gold-dark to-gold p-2.5 rounded-full text-white">
-                      <PieChart className="text-white" size={24} />
-                    </div>
-                    <h2 className="text-xl font-bold font-playfair">Phân Tích Cơ Bản</h2>
-                  </div>
-                  <p className="text-slate-600 mb-4">
-                    Lạm phát tại Mỹ tăng cao, căng thẳng địa chính trị, và sự suy yếu của đồng USD là những yếu tố thúc đẩy giá vàng tăng trong thời gian gần đây.
-                  </p>
-                  <div className="bg-gradient-to-r from-gold-light/20 to-gold-muted/20 rounded-xl p-5 shadow-inner">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="font-medium">Lạm phát Mỹ</span>
-                      <span className="text-red-600 font-medium">3.4%</span>
-                    </div>
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="font-medium">Lãi suất FED</span>
-                      <span className="font-medium">5.25-5.5%</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">USD Index</span>
-                      <span className="text-red-600 font-medium flex items-center">
-                        104.2 <ArrowDownRight size={14} className="ml-1" />
-                      </span>
-                    </div>
-                  </div>
+              ) : (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
+                  <p className="text-yellow-600">Không có dữ liệu phân tích thị trường</p>
                 </div>
-                
-                <div className="bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-md border border-gold-light/30 hover:shadow-lg transform hover:scale-[1.01] transition-all duration-500">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-gradient-to-br from-gold-dark to-gold p-2.5 rounded-full text-white">
-                      <Activity className="text-white" size={24} />
-                    </div>
-                    <h2 className="text-xl font-bold font-playfair">Dự Báo Giá</h2>
-                  </div>
-                  <p className="text-slate-600 mb-4">
-                    Dựa trên các phân tích kỹ thuật và cơ bản, chúng tôi dự báo giá vàng SJC trong tuần tới sẽ dao động trong khoảng 11.500.000 - 11.900.000 VNĐ/lượng.
-                  </p>
-                  <div className="bg-gradient-to-r from-gold-light/20 to-gold-muted/20 rounded-xl p-5 shadow-inner">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="font-medium">Ngắn hạn (1 tuần)</span>
-                      <span className="text-green-600 font-medium flex items-center">
-                        Tăng <TrendingUp size={14} className="ml-1" />
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="font-medium">Trung hạn (1 tháng)</span>
-                      <span className="text-green-600 font-medium">Tăng nhẹ</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium">Dài hạn (3-6 tháng)</span>
-                      <span className="font-medium">Dao động</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
           
@@ -189,36 +238,31 @@ const PhanTich = () => {
           </div>
           
           {/* Expert Opinions */}
-          <div className="mb-16 bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gold-light/30 transform hover:scale-[1.01] transition-all duration-500">
-            <div className="flex flex-col items-center mb-8">
-              <h2 className="text-2xl md:text-3xl font-bold mb-3 font-playfair text-center">
-                <span className="bg-gradient-to-r from-gold-dark via-amber-600 to-gold bg-clip-text text-transparent">
-                  Ý Kiến Chuyên Gia
-                </span>
-              </h2>
-              <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold-dark to-transparent"></div>
-            </div>
-            
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="bg-gradient-to-r from-gold-light/20 via-gold/10 to-gold-muted/20 p-6 rounded-2xl flex-1 shadow-inner">
-                <p className="italic mb-4 text-slate-700 leading-relaxed">
-                  "Giá vàng trong nước sẽ tiếp tục duy trì mức chênh lệch cao so với giá thế giới do cung không đủ cầu. Nhà đầu tư cần thận trọng khi giá đang ở vùng đỉnh lịch sử."
-                </p>
-                <div className="pt-3 border-t border-dashed border-gold-light/30">
-                  <p className="font-medium text-slate-800">TS. Nguyễn Văn A - Chuyên gia kinh tế</p>
-                </div>
+          {marketAnalysis && (
+            <div className="mb-16 bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-md border border-gold-light/30 transform hover:scale-[1.01] transition-all duration-500">
+              <div className="flex flex-col items-center mb-8">
+                <h2 className="text-2xl md:text-3xl font-bold mb-3 font-playfair text-center">
+                  <span className="bg-gradient-to-r from-gold-dark via-amber-600 to-gold bg-clip-text text-transparent">
+                    Ý Kiến Chuyên Gia
+                  </span>
+                </h2>
+                <div className="w-24 h-0.5 bg-gradient-to-r from-transparent via-gold-dark to-transparent"></div>
               </div>
               
-              <div className="bg-gradient-to-r from-gold-light/20 via-gold/10 to-gold-muted/20 p-6 rounded-2xl flex-1 shadow-inner">
-                <p className="italic mb-4 text-slate-700 leading-relaxed">
-                  "Vàng vẫn là kênh trú ẩn an toàn trong bối cảnh bất ổn toàn cầu, nhưng nhà đầu tư nên phân bổ tài sản hợp lý và không nên đầu tư quá nhiều vào một thời điểm."
-                </p>
-                <div className="pt-3 border-t border-dashed border-gold-light/30">
-                  <p className="font-medium text-slate-800">TS. Trần Thị B - Giám đốc phân tích</p>
-                </div>
+              <div className="flex flex-col md:flex-row gap-6">
+                {marketAnalysis.expertOpinions.map((opinion, index) => (
+                  <div key={index} className="bg-gradient-to-r from-gold-light/20 via-gold/10 to-gold-muted/20 p-6 rounded-2xl flex-1 shadow-inner">
+                    <p className="italic mb-4 text-slate-700 leading-relaxed">
+                      "{opinion.quote}"
+                    </p>
+                    <div className="pt-3 border-t border-dashed border-gold-light/30">
+                      <p className="font-medium text-slate-800">{opinion.expert} - {opinion.title}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
           
           {/* Newsletter Subscription */}
           <div className="mb-16 bg-gradient-to-r from-gold-light/20 via-gold/10 to-gold-muted/20 p-8 rounded-3xl shadow-md border border-gold-light/30">

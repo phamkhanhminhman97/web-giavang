@@ -14,6 +14,9 @@ import BaoMat from "./pages/BaoMat";
 import Help from "./pages/Help";
 import Faq from "./pages/Faq";
 import Disclaimer from "./pages/Disclaimer";
+import AITools from "./pages/AITools";
+import GeneratedContentList from "./pages/GeneratedContentList";
+import GeneratedContentDetail from "./pages/GeneratedContentDetail";
 import CookieConsent from './components/CookieConsent';
 
 const queryClient = new QueryClient();
@@ -35,6 +38,9 @@ const App = () => (
           <Route path="/help" element={<Help />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/mien-tru" element={<Disclaimer />} />
+          <Route path="/cong-cu-ai" element={<AITools />} />
+          <Route path="/bai-viet" element={<GeneratedContentList />} />
+          <Route path="/bai-viet/:slug" element={<GeneratedContentDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

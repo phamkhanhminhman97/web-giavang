@@ -49,6 +49,26 @@ const Navbar = () => {
               Phân Tích
             </Link>
             <Link
+              to="/cong-cu-ai"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                isActive("/cong-cu-ai")
+                  ? "text-gold-dark bg-gold-muted"
+                  : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
+              }`}
+            >
+              Công Cụ AI
+            </Link>
+            <Link
+              to="/bai-viet"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                isActive("/bai-viet")
+                  ? "text-gold-dark bg-gold-muted"
+                  : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
+              }`}
+            >
+              Bài Viết
+            </Link>
+            <Link
               to="/gioi-thieu"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive("/gioi-thieu")
@@ -109,6 +129,28 @@ const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               Phân Tích
+            </Link>
+            <Link
+              to="/cong-cu-ai"
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                isActive("/cong-cu-ai")
+                  ? "text-gold-dark bg-gold-muted"
+                  : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Công Cụ AI
+            </Link>
+            <Link
+              to="/bai-viet"
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                isActive("/bai-viet")
+                  ? "text-gold-dark bg-gold-muted"
+                  : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Bài Viết
             </Link>
             <Link
               to="/gioi-thieu"
