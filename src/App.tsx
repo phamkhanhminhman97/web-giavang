@@ -19,6 +19,7 @@ import GeneratedContentList from "./pages/GeneratedContentList";
 import GeneratedContentDetail from "./pages/GeneratedContentDetail";
 import Search from "./pages/Search";
 import CookieConsent from './components/CookieConsent';
+import GoldChartPage from "./pages/gold-chart";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/phan-tich" element={<PhanTich />} />
+          <Route path="/gold-chart" element={<GoldChartPage />} />
           <Route path="/phan-tich/bai-viet/:id" element={<ArticleDetail />} />
           <Route path="/about" element={<GioiThieu />} />
           <Route path="/contact" element={<LienHe />} />
@@ -39,7 +41,7 @@ const App = () => (
           <Route path="/help" element={<Help />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/mien-tru" element={<Disclaimer />} />
-          <Route path="/cong-cu-ai" element={<AITools />} />
+          {/* <Route path="/cong-cu-ai" element={<AITools />} /> */}
           <Route path="/bai-viet" element={<GeneratedContentList />} />
           <Route path="/bai-viet/:slug" element={<GeneratedContentDetail />} />
           

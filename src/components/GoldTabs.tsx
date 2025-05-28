@@ -8,7 +8,7 @@ import { useGoldPrices } from "@/contexts/GoldPriceContext";
 
 // Define gold vendor data
 const vendors: VendorName[] = [
-  "SJC", "DOJI", "PNJ", "BTMC", "MiHong", "PhuQuy", "HuyThanh"
+  "SJC", "DOJI", "PNJ", "BTMC", "MiHong", "PhuQuy", "HuyThanh", "KimKhanhVietHung"
 ];
 
 // Map API provider names to our vendor names
@@ -19,7 +19,8 @@ const providerToVendorMap: Record<string, VendorName> = {
   'BTMC': 'BTMC',
   'MI HỒNG': 'MiHong',
   'PHÚ QUÝ': 'PhuQuy',
-  'HUY THANH': 'HuyThanh'
+  'HUY THANH': 'HuyThanh',
+  'KIM KHANH VIET HUNG': 'KimKhanhVietHung'
 };
 
 // Interface for processed gold data by vendor

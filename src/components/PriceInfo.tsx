@@ -10,7 +10,7 @@ const PriceInfo = () => {
   const [dojiPrice, setDojiPrice] = useState<number | null>(null);
   const [dojiChange, setDojiChange] = useState<number>(0);
   // USD/VND exchange rate (static for now, could be fetched from an API)
-  const [usdRate, setUsdRate] = useState<number>(24850);
+  const [usdRate, setUsdRate] = useState<number>(25912);
   const [usdChange, setUsdChange] = useState<number>(-0.12);
 
   // Process gold price data from context

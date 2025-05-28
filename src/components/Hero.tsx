@@ -1,14 +1,18 @@
 import { Clock, TrendingUp, TrendingDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useGoldPrices } from "@/contexts/GoldPriceContext";
+import { fetchWorldGoldPrices } from "@/services/api";
+import { WorldGoldPriceResponse } from "@/interfaces/gold-price.interface";
 
 const Hero = () => {
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [goldPrice, setGoldPrice] = useState({
-    price: "2,345.67",
-    change: 0.25,
+    price: "Đang cập nhật",
+    change: 0,
     trend: "up" as "up" | "down"
   });
+  const [worldGoldLoading, setWorldGoldLoading] = useState(false);
+  const [worldGoldError, setWorldGoldError] = useState<string | null>(null);
   const { goldPrices, loading, error } = useGoldPrices();
   const [goldPriceCards, setGoldPriceCards] = useState<{
     sjc: { value: string; change: string; trend: 'up' | 'down' };
@@ -41,6 +45,34 @@ const Hero = () => {
     return `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
   };
 
+  // Fetch world gold price data
+  useEffect(() => {
+    const fetchWorldGoldPrice = async () => {
+      try {
+        setWorldGoldLoading(true);
+        const response = await fetchWorldGoldPrices();
+        
+        if (response) {
+          setGoldPrice({
+            price: formatPrice(response.price),
+            change: response.chp,
+            trend: response.chp >= 0 ? 'up' : 'down'
+          });
+        }
+      } catch (error) {
+        setWorldGoldError('Không thể cập nhật giá vàng thế giới');
+        console.error('Error fetching world gold price:', error);
+      } finally {
+        setWorldGoldLoading(false);
+      }
+    };
+
+    fetchWorldGoldPrice();
+    const interval = setInterval(fetchWorldGoldPrice, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Process gold price data from context
   useEffect(() => {
     if (goldPrices.length > 0) {
@@ -63,6 +95,20 @@ const Hero = () => {
       const btmcData = goldPrices.find(item => 
         item.provider.toUpperCase() === 'BTMC' || item.provider.includes('BẢO TÍN MINH CHÂU')
       );
+
+      // Process World Gold (XAU) data
+      const worldGoldData = goldPrices.find(item => 
+        item.type.toUpperCase() === 'XAU'
+      );
+
+      // Update world gold price
+      if (worldGoldData) {
+        setGoldPrice({
+          price: formatPrice(worldGoldData.sellPrice),
+          change: worldGoldData.change.sell,
+          trend: worldGoldData.change.sell >= 0 ? 'up' : 'down'
+        });
+      }
 
       // Update gold prices
       setGoldPriceCards({

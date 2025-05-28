@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 
 // Gold vendor icon component
-export type VendorName = "SJC" | "DOJI" | "PNJ" | "BTMC" | "MiHong" | "PhuQuy" | "HuyThanh";
+export type VendorName = "SJC" | "DOJI" | "PNJ" | "BTMC" | "MiHong" | "PhuQuy" | "HuyThanh" | "KimKhanhVietHung";
 
 export const GoldVendorIcon = ({ vendor }: { vendor: VendorName }) => {
   switch (vendor) {
@@ -28,6 +28,8 @@ export const GoldVendorIcon = ({ vendor }: { vendor: VendorName }) => {
       return <Sparkles size={16} className="text-gold" />;
     case "HuyThanh":
       return <Medal size={16} className="text-gold" />;
+    case "KimKhanhVietHung":
+      return <Gem size={16} className="text-gold" />;
     default:
       return <Crown size={16} className="text-gold" />;
   }

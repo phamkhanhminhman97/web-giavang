@@ -62,6 +62,16 @@ const Navbar = () => {
               Phân Tích
             </Link>
             <Link
+              to="/gold-chart"
+              className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                isActive("/gold-chart")
+                  ? "text-gold-dark bg-gold-muted"
+                  : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
+              }`}
+            >
+              Biểu Đồ Vàng
+            </Link>
+            <Link
               to="/cong-cu-ai"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive("/cong-cu-ai")
@@ -160,6 +170,17 @@ const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               Phân Tích
+            </Link>
+            <Link
+              to="/gold-chart"
+              className={`block px-3 py-2 rounded-md text-base font-medium ${
+                isActive("/gold-chart")
+                  ? "text-gold-dark bg-gold-muted"
+                  : "text-slate-700 hover:text-gold-dark hover:bg-gold-muted/50"
+              }`}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Biểu Đồ Vàng
             </Link>
             <Link
               to="/cong-cu-ai"

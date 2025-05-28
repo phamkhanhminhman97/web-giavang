@@ -1,5 +1,6 @@
-import { GoldPriceResponse, ChartDataResponse } from '../interfaces/gold-price.interface';
+import { GoldPriceResponse, ChartDataResponse, WorldGoldPriceResponse } from '../interfaces/gold-price.interface';
 import env from '../utils/environment';
+import axios from 'axios'
 
 // Define the base URL for the API
 const API_BASE_URL = env.API_URL;
@@ -95,5 +96,21 @@ export const crawlPNJGoldPrices = async (): Promise<GoldPriceResponse> => {
       data: [],
       error: error instanceof Error ? error.message : 'Unknown error'
     };
+  }
+};
+
+/**
+ * Fetch world gold prices (XAU)
+ * @returns Promise with world gold price data
+ */
+export const fetchWorldGoldPrices = async (): Promise<WorldGoldPriceResponse> => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/gold-prices/world/XAU`);
+
+
+    return await response.data;
+  } catch (error) {
+    console.error('Error fetching world gold prices:', error);
+    throw error; // Let the component handle the error
   }
 };
