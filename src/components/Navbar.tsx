@@ -71,7 +71,7 @@ const Navbar = () => {
             >
               Biểu Đồ Vàng
             </Link>
-            <Link
+            {/* <Link
               to="/cong-cu-ai"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                 isActive("/cong-cu-ai")
@@ -80,7 +80,7 @@ const Navbar = () => {
               }`}
             >
               Công Cụ AI
-            </Link>
+            </Link> */}
             <Link
               to="/bai-viet"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -182,7 +182,7 @@ const Navbar = () => {
             >
               Biểu Đồ Vàng
             </Link>
-            <Link
+            {/* <Link
               to="/cong-cu-ai"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 isActive("/cong-cu-ai")
@@ -192,7 +192,7 @@ const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               Công Cụ AI
-            </Link>
+            </Link> */}
             <Link
               to="/bai-viet"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
