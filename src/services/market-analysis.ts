@@ -1,4 +1,4 @@
-import env from '../utils/environment';
+import { httpRequest } from './http';
 
 export interface MarketAnalysis {
   marketTrend: {
@@ -41,12 +41,7 @@ export interface MarketAnalysisResponse {
 
 export const fetchMarketAnalysis = async (): Promise<MarketAnalysisResponse> => {
   try {
-    const API_BASE_URL = env.API_URL;
-    const response = await fetch(`${API_BASE_URL}/market-analysis`);
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    return await response.json();
+    return await httpRequest<MarketAnalysisResponse>('/market-analysis');
   } catch (error) {
     console.error('Error fetching market analysis:', error);
     return {

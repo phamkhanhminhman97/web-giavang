@@ -1,8 +1,5 @@
-import env from '../utils/environment';
 import { MarketAnalysisResponse } from './market-analysis';
-
-// Define the base URL for the API
-const API_BASE_URL = env.API_URL;
+import { httpRequest } from './http';
 
 /**
  * Interface for chat completion request
@@ -86,11 +83,7 @@ export interface AnswerQuestionResponse {
  */
 export const fetchDeepseekModels = async (): Promise<any> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/models`);
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    return await response.json();
+    return await httpRequest('/deepseek/models');
   } catch (error) {
     console.error('Error fetching Deepseek models:', error);
     return {
@@ -107,19 +100,10 @@ export const fetchDeepseekModels = async (): Promise<any> => {
  */
 export const sendChatCompletion = async (request: ChatCompletionRequest): Promise<ChatCompletionResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/chat`, {
+    return await httpRequest<ChatCompletionResponse>('/deepseek/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
+      body: request,
     });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
   } catch (error) {
     console.error('Error sending chat completion:', error);
     return {
@@ -136,19 +120,10 @@ export const sendChatCompletion = async (request: ChatCompletionRequest): Promis
  */
 export const analyzeGoldTrend = async (request: AnalyzeGoldTrendRequest): Promise<MarketAnalysisResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/analyze-gold-trend`, {
+    return await httpRequest<MarketAnalysisResponse>('/deepseek/analyze-gold-trend', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
+      body: request,
     });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
   } catch (error) {
     console.error('Error analyzing gold trend:', error);
     return {
@@ -165,19 +140,10 @@ export const analyzeGoldTrend = async (request: AnalyzeGoldTrendRequest): Promis
  */
 export const generateContent = async (request: GenerateContentRequest): Promise<GenerateContentResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/generate-content`, {
+    return await httpRequest<GenerateContentResponse>('/deepseek/generate-content', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
+      body: request,
     });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
   } catch (error) {
     console.error('Error generating content:', error);
     return {
@@ -194,19 +160,10 @@ export const generateContent = async (request: GenerateContentRequest): Promise<
  */
 export const answerQuestion = async (request: AnswerQuestionRequest): Promise<AnswerQuestionResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/answer-question`, {
+    return await httpRequest<AnswerQuestionResponse>('/deepseek/answer-question', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(request),
+      body: request,
     });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
   } catch (error) {
     console.error('Error answering question:', error);
     return {
@@ -265,13 +222,7 @@ export interface MarketAnalysisForPhanTichResponse {
  */
 export const fetchMarketAnalysisForPhanTich = async (): Promise<MarketAnalysisForPhanTichResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/market-analysis-for-phan-tich`);
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
+    return await httpRequest<MarketAnalysisForPhanTichResponse>('/deepseek/market-analysis-for-phan-tich');
   } catch (error) {
     console.error('Error fetching market analysis for PhanTich:', error);
     return {

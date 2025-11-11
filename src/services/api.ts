@@ -1,9 +1,5 @@
 import { GoldPriceResponse, ChartDataResponse, WorldGoldPriceResponse } from '../interfaces/gold-price.interface';
-import env from '../utils/environment';
-import axios from 'axios'
-
-// Define the base URL for the API
-const API_BASE_URL = env.API_URL;
+import { httpRequest, ApiError } from './http';
 
 /**
  * Fetch all gold prices from the API
@@ -11,11 +7,7 @@ const API_BASE_URL = env.API_URL;
  */
 export const fetchAllGoldPrices = async (): Promise<GoldPriceResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/gold-prices`);
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    return await response.json();
+    return await httpRequest<GoldPriceResponse>('/gold-prices');
   } catch (error) {
     console.error('Error fetching gold prices:', error);
     return {
@@ -33,11 +25,7 @@ export const fetchAllGoldPrices = async (): Promise<GoldPriceResponse> => {
  */
 export const fetchGoldPricesBySource = async (source: 'pnj' | 'doji' | 'sjc'): Promise<GoldPriceResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/gold-prices/${source}`);
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    return await response.json();
+    return await httpRequest<GoldPriceResponse>(`/gold-prices/${source}`);
   } catch (error) {
     console.error(`Error fetching ${source} gold prices:`, error);
     return {
@@ -61,13 +49,9 @@ export const fetchChartData = async (
   days: number = 30
 ): Promise<ChartDataResponse> => {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/gold-prices/chart/${provider}?type=${encodeURIComponent(type)}&days=${days}`
+    return await httpRequest<ChartDataResponse>(
+      `/gold-prices/chart/${provider}?type=${encodeURIComponent(type)}&days=${days}`
     );
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    return await response.json();
   } catch (error) {
     console.error(`Error fetching chart data for ${provider}:`, error);
     return {
@@ -84,11 +68,7 @@ export const fetchChartData = async (
  */
 export const crawlPNJGoldPrices = async (): Promise<GoldPriceResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/gold-prices/craw/pnj`);
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    return await response.json();
+    return await httpRequest<GoldPriceResponse>('/gold-prices/craw/pnj');
   } catch (error) {
     console.error('Error crawling PNJ gold prices:', error);
     return {
@@ -105,12 +85,9 @@ export const crawlPNJGoldPrices = async (): Promise<GoldPriceResponse> => {
  */
 export const fetchWorldGoldPrices = async (): Promise<WorldGoldPriceResponse> => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/gold-prices/world/XAU`);
-
-
-    return await response.data;
+    return await httpRequest<WorldGoldPriceResponse>('/gold-prices/world/XAU');
   } catch (error) {
     console.error('Error fetching world gold prices:', error);
-    throw error; // Let the component handle the error
+    throw error instanceof ApiError ? error : new ApiError('Failed to fetch world gold prices');
   }
 };

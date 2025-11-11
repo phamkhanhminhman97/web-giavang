@@ -1,7 +1,4 @@
-import env from '../utils/environment';
-
-// Define the base URL for the API
-const API_BASE_URL = env.API_URL;
+import { httpRequest } from './http';
 
 /**
  * Interface for generated content item
@@ -64,19 +61,13 @@ export const fetchGeneratedContentList = async (options?: {
   try {
     const { published = true, contentType, limit = 10, offset = 0 } = options || {};
     
-    let url = `${API_BASE_URL}/deepseek/generated-content?published=${published}&limit=${limit}&offset=${offset}`;
+    let url = `/deepseek/generated-content?published=${published}&limit=${limit}&offset=${offset}`;
     
     if (contentType) {
       url += `&contentType=${encodeURIComponent(contentType)}`;
     }
     
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
+    return await httpRequest<GeneratedContentListResponse>(url);
   } catch (error) {
     console.error('Error fetching generated content list:', error);
     return {
@@ -93,13 +84,7 @@ export const fetchGeneratedContentList = async (options?: {
  */
 export const fetchGeneratedContentById = async (id: number): Promise<GeneratedContentDetailResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/generated-content/${id}`);
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
+    return await httpRequest<GeneratedContentDetailResponse>(`/deepseek/generated-content/${id}`);
   } catch (error) {
     console.error('Error fetching generated content by ID:', error);
     return {
@@ -116,13 +101,7 @@ export const fetchGeneratedContentById = async (id: number): Promise<GeneratedCo
  */
 export const fetchGeneratedContentBySlug = async (slug: string): Promise<GeneratedContentDetailResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/generated-content/slug/${slug}`);
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
+    return await httpRequest<GeneratedContentDetailResponse>(`/deepseek/generated-content/slug/${slug}`);
   } catch (error) {
     console.error('Error fetching generated content by slug:', error);
     return {
@@ -139,18 +118,9 @@ export const fetchGeneratedContentBySlug = async (slug: string): Promise<Generat
  */
 export const publishGeneratedContent = async (id: number): Promise<GeneratedContentDetailResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/generated-content/${id}/publish`, {
+    return await httpRequest<GeneratedContentDetailResponse>(`/deepseek/generated-content/${id}/publish`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
     });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
   } catch (error) {
     console.error('Error publishing generated content:', error);
     return {
@@ -167,18 +137,9 @@ export const publishGeneratedContent = async (id: number): Promise<GeneratedCont
  */
 export const unpublishGeneratedContent = async (id: number): Promise<GeneratedContentDetailResponse> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/deepseek/generated-content/${id}/unpublish`, {
+    return await httpRequest<GeneratedContentDetailResponse>(`/deepseek/generated-content/${id}/unpublish`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
     });
-    
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-    
-    return await response.json();
   } catch (error) {
     console.error('Error unpublishing generated content:', error);
     return {

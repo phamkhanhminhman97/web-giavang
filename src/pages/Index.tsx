@@ -19,40 +19,79 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { priceAlertApi, searchApi, type SearchResult } from "@/services/enhanced-api";
 
 const Index = () => {
   const [timeFilter, setTimeFilter] = useState("today");
   const scrolled = useScrollEffect(50);
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("q");
-  const [searchResults, setSearchResults] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [searchTotal, setSearchTotal] = useState(0);
   const [searchInput, setSearchInput] = useState("");
   const [showPriceAlert, setShowPriceAlert] = useState(false);
   const [alertEmail, setAlertEmail] = useState("");
   const [alertThreshold, setAlertThreshold] = useState("100000");
+  const [alertSubmitting, setAlertSubmitting] = useState(false);
+  const [alertError, setAlertError] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState(true);
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [userCount] = useState(12847); // Mock user count
   const { toast } = useToast();
+  const formatCurrency = (value: number) => new Intl.NumberFormat('vi-VN').format(value);
+  const formatTimestamp = (value?: string) => {
+    if (!value) return "Không xác định";
+    const date = new Date(value);
+    return isNaN(date.getTime()) ? "Không xác định" : date.toLocaleString("vi-VN");
+  };
   
   // Use our custom hook for formatted date/time
   const { formattedDateTime } = useFormattedDate();
 
   // Handle search functionality
   useEffect(() => {
-    if (searchQuery) {
-      setLoading(true);
-      
-      // In a real implementation, you would fetch search results from an API
-      // For now, we'll just simulate a delay and return empty results
-      const timer = setTimeout(() => {
-        setSearchResults([]);
-        setLoading(false);
-      }, 500);
-      
-      return () => clearTimeout(timer);
+    if (!searchQuery) {
+      setSearchResults([]);
+      setSearchError(null);
+      setSearchTotal(0);
+      setSearchLoading(false);
+      return;
     }
+
+    let isCancelled = false;
+    setSearchLoading(true);
+    setSearchError(null);
+
+    (async () => {
+      try {
+        const response = await searchApi.searchGoldPrices({ q: searchQuery });
+        if (isCancelled) return;
+
+        if (response.success && response.data) {
+          setSearchResults(response.data.results);
+          setSearchTotal(response.data.total);
+        } else {
+          setSearchResults([]);
+          setSearchTotal(0);
+          setSearchError(response.error || "Không tìm thấy kết quả phù hợp");
+        }
+      } catch (err) {
+        if (isCancelled) return;
+        setSearchResults([]);
+        setSearchTotal(0);
+        setSearchError(err instanceof Error ? err.message : "Không thể tải kết quả tìm kiếm");
+      } finally {
+        if (!isCancelled) {
+          setSearchLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [searchQuery]);
 
   // Simulate live updates
@@ -103,19 +142,42 @@ const Index = () => {
   };
 
   // Price alert submission
-  const handlePriceAlertSubmit = (e: React.FormEvent) => {
+  const handlePriceAlertSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!alertEmail || !alertThreshold) return;
-    
-    // Simulate API call
-    toast({
-      title: "🔔 Đăng ký thành công!",
-      description: `Bạn sẽ nhận cảnh báo khi giá thay đổi ≥ ${Number(alertThreshold).toLocaleString('vi-VN')}đ/lượng`,
-    });
-    
-    setShowPriceAlert(false);
-    setAlertEmail("");
-    setAlertThreshold("100000");
+    if (!alertEmail || !alertThreshold) {
+      setAlertError("Vui lòng nhập đầy đủ thông tin");
+      return;
+    }
+
+    setAlertSubmitting(true);
+    setAlertError(null);
+
+    try {
+      const payload = {
+        email: alertEmail.trim(),
+        threshold: Number(alertThreshold),
+        provider: "SJC",
+        goldType: "SJC",
+        direction: "both" as const,
+      };
+
+      const response = await priceAlertApi.create(payload);
+      if (response.success) {
+        toast({
+          title: "🔔 Đăng ký thành công!",
+          description: `Bạn sẽ nhận cảnh báo khi giá thay đổi ≥ ${Number(alertThreshold).toLocaleString('vi-VN')}đ/lượng`,
+        });
+        setShowPriceAlert(false);
+        setAlertEmail("");
+        setAlertThreshold("100000");
+      } else {
+        setAlertError(response.error || "Không thể tạo cảnh báo, vui lòng thử lại.");
+      }
+    } catch (err) {
+      setAlertError(err instanceof Error ? err.message : "Không thể kết nối máy chủ");
+    } finally {
+      setAlertSubmitting(false);
+    }
   };
 
   // If there's a search query, show search results
@@ -128,17 +190,68 @@ const Index = () => {
         <main className="flex-grow">
           <div className="container mx-auto px-4 py-8">
             <h1 className="text-2xl font-bold mb-6">Kết quả tìm kiếm cho: "{searchQuery}"</h1>
+            {searchTotal > 0 && !searchLoading && !searchError && (
+              <p className="text-sm text-slate-500 mb-4">
+                {searchTotal.toLocaleString("vi-VN")} kết quả phù hợp
+              </p>
+            )}
 
-            {loading ? (
+            {searchLoading ? (
               <div className="flex justify-center py-8">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gold-dark"></div>
               </div>
+            ) : searchError ? (
+              <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+                <p className="text-red-600 mb-2">Không thể tải kết quả tìm kiếm</p>
+                <p className="text-slate-600 text-sm">{searchError}</p>
+              </div>
             ) : searchResults.length > 0 ? (
               <div className="space-y-6">
-                {searchResults.map((result, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <h2 className="text-lg font-semibold text-gold-dark">{result.title}</h2>
-                    <p className="text-gray-600 mt-2">{result.description}</p>
+                {searchResults.map((result) => (
+                  <div
+                    key={`${result.id}-${result.provider}-${result.goldType}`}
+                    className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white/80 backdrop-blur-sm"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+                      <div>
+                        <h2 className="text-lg font-semibold text-gold-dark">
+                          {result.provider} · {result.goldType}
+                        </h2>
+                        <p className="text-sm text-slate-500">
+                          Cập nhật: {formatTimestamp(result.lastUpdate)}
+                        </p>
+                      </div>
+                      <div className="text-sm font-medium">
+                        <span className={result.change24h >= 0 ? "text-green-600" : "text-red-600"}>
+                          {result.change24h >= 0 ? "+" : "-"}
+                          {Math.abs(result.change24h).toLocaleString("vi-VN")}đ
+                        </span>
+                        <span className="text-slate-500 ml-2">
+                          ({result.changePercent >= 0 ? "+" : "-"}
+                          {Math.abs(result.changePercent).toFixed(2)}%)
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-gold-light/10 rounded-lg p-4">
+                        <p className="text-sm text-slate-500 mb-1">Giá mua</p>
+                        <p className="text-xl font-semibold text-slate-800">
+                          {formatCurrency(result.buyPrice)}đ
+                        </p>
+                      </div>
+                      <div className="bg-gold-light/10 rounded-lg p-4">
+                        <p className="text-sm text-slate-500 mb-1">Giá bán</p>
+                        <p className="text-xl font-semibold text-slate-800">
+                          {formatCurrency(result.sellPrice)}đ
+                        </p>
+                      </div>
+                      <div className="bg-gold-light/10 rounded-lg p-4">
+                        <p className="text-sm text-slate-500 mb-1">Xu hướng 24h</p>
+                        <p className={`text-xl font-semibold ${result.change24h >= 0 ? "text-green-600" : "text-red-600"}`}>
+                          {result.change24h >= 0 ? "Tăng" : "Giảm"}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -530,7 +643,16 @@ const Index = () => {
       </main>
 
         {/* Price Alert Modal */}
-        <Dialog open={showPriceAlert} onOpenChange={setShowPriceAlert}>
+        <Dialog
+          open={showPriceAlert}
+          onOpenChange={(open) => {
+            setShowPriceAlert(open);
+            if (!open) {
+              setAlertError(null);
+              setAlertSubmitting(false);
+            }
+          }}
+        >
           <DialogContent className="max-w-md mx-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
@@ -568,6 +690,11 @@ const Index = () => {
                   </span>
                 </div>
               </div>
+              {alertError && (
+                <p className="text-sm text-red-500">
+                  {alertError}
+                </p>
+              )}
               <div className="bg-gold-light/10 p-3 rounded-lg text-sm text-slate-600">
                 <div className="flex items-center gap-2 mb-2">
                   <Star size={14} className="text-gold-dark" />
@@ -591,8 +718,9 @@ const Index = () => {
                 <Button
                   type="submit"
                   className="flex-1 bg-gradient-to-r from-gold-dark to-gold hover:shadow-lg"
+                  disabled={alertSubmitting}
                 >
-                  Đăng ký ngay
+                  {alertSubmitting ? "Đang đăng ký..." : "Đăng ký ngay"}
                 </Button>
               </div>
             </form>

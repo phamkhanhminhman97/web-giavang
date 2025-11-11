@@ -1,4 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+import { httpRequest } from './http';
+
+const apiRequest = async <T = any>(path: string, options?: RequestInit) => {
+  return httpRequest<ApiResponse<T>>(path, options);
+};
 
 // API Response Types
 export interface ApiResponse<T = any> {
@@ -74,36 +78,30 @@ export const priceAlertApi = {
     provider?: string;
     direction?: 'increase' | 'decrease' | 'both';
   }): Promise<ApiResponse<PriceAlert>> {
-    const response = await fetch(`${API_BASE_URL}/price-alerts`, {
+    return apiRequest<PriceAlert>('/price-alerts', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(alertData),
+      body: alertData,
     });
-    return await response.json();
   },
 
   async getByEmail(email: string): Promise<ApiResponse<PriceAlert[]>> {
-    const response = await fetch(`${API_BASE_URL}/price-alerts?email=${encodeURIComponent(email)}`);
-    return await response.json();
+    return apiRequest<PriceAlert[]>(`/price-alerts?email=${encodeURIComponent(email)}`);
   },
 
   async delete(id: string): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/price-alerts/${id}`, {
+    return apiRequest(`/price-alerts/${id}`, {
       method: 'DELETE',
     });
-    return await response.json();
   },
 
   async toggle(id: string): Promise<ApiResponse<PriceAlert>> {
-    const response = await fetch(`${API_BASE_URL}/price-alerts/${id}/toggle`, {
+    return apiRequest<PriceAlert>(`/price-alerts/${id}/toggle`, {
       method: 'POST',
     });
-    return await response.json();
   },
 
   async getStats(): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/price-alerts/stats`);
-    return await response.json();
+    return apiRequest('/price-alerts/stats');
   },
 };
 
@@ -115,54 +113,45 @@ export const activityApi = {
     provider?: string;
     goldType?: string;
   }): Promise<ApiResponse<Activity>> {
-    const response = await fetch(`${API_BASE_URL}/activities`, {
+    return apiRequest<Activity>('/activities', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: {
         ...activityData,
         userAgent: navigator.userAgent,
         ip: 'client-side', // Would be set by server
-      }),
+      },
     });
-    return await response.json();
   },
 
   async getRecent(limit = 10): Promise<ApiResponse<Activity[]>> {
-    const response = await fetch(`${API_BASE_URL}/activities/recent?limit=${limit}`);
-    return await response.json();
+    return apiRequest<Activity[]>(`/activities/recent?limit=${limit}`);
   },
 
   async getStats(): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/activities/stats`);
-    return await response.json();
+    return apiRequest('/activities/stats');
   },
 
   async getPopular(): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/activities/popular`);
-    return await response.json();
+    return apiRequest('/activities/popular');
   },
 };
 
 // Stats APIs
 export const statsApi = {
   async getLive(): Promise<ApiResponse<LiveStats>> {
-    const response = await fetch(`${API_BASE_URL}/stats/live`);
-    return await response.json();
+    return apiRequest<LiveStats>('/stats/live');
   },
 
   async getPriceChanges(): Promise<ApiResponse<PriceChange[]>> {
-    const response = await fetch(`${API_BASE_URL}/stats/price-changes`);
-    return await response.json();
+    return apiRequest<PriceChange[]>('/stats/price-changes');
   },
 
   async getMarketSummary(): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/stats/market-summary`);
-    return await response.json();
+    return apiRequest('/stats/market-summary');
   },
 
   async getUserAnalytics(): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/stats/user-analytics`);
-    return await response.json();
+    return apiRequest('/stats/user-analytics');
   },
 };
 
@@ -184,24 +173,22 @@ export const searchApi = {
       if (value) queryParams.append(key, value);
     });
     
-    const response = await fetch(`${API_BASE_URL}/search?${queryParams.toString()}`);
-    return await response.json();
+    return apiRequest<{ results: SearchResult[]; total: number; query: any }>(
+      `/search?${queryParams.toString()}`
+    );
   },
 
   async getSuggestions(query?: string): Promise<ApiResponse<SearchSuggestion[]>> {
     const params = query ? `?q=${encodeURIComponent(query)}` : '';
-    const response = await fetch(`${API_BASE_URL}/search/suggestions${params}`);
-    return await response.json();
+    return apiRequest<SearchSuggestion[]>(`/search/suggestions${params}`);
   },
 
   async getFilters(): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/search/filters`);
-    return await response.json();
+    return apiRequest('/search/filters');
   },
 
   async getTrending(): Promise<ApiResponse> {
-    const response = await fetch(`${API_BASE_URL}/search/trending`);
-    return await response.json();
+    return apiRequest('/search/trending');
   },
 };
 

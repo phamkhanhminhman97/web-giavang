@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { fetchAllGoldPrices } from '@/services/api';
 import { GoldPriceResponse, IGoldPrice } from '@/interfaces/gold-price.interface';
+import env from '@/utils/environment';
 
 interface GoldPriceContextType {
   goldPrices: IGoldPrice[];
@@ -24,42 +26,43 @@ interface GoldPriceProviderProps {
 }
 
 export const GoldPriceProvider: React.FC<GoldPriceProviderProps> = ({ children }) => {
-  const [goldPrices, setGoldPrices] = useState<IGoldPrice[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchGoldData = async () => {
-    setLoading(true);
-    try {
-      const response = await fetchAllGoldPrices();
-      
-      if (response.success && response.data.length > 0) {
-        setGoldPrices(response.data);
-        setError(null);
-      } else {
-        setError(response.error || "Failed to fetch gold price data");
-      }
-    } catch (err) {
-      setError("Error fetching gold price data");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchGoldData();
-  }, []);
-
-  const value = {
-    goldPrices,
-    loading,
+  const {
+    data,
+    isLoading,
+    isFetching,
     error,
-    refetch: fetchGoldData
-  };
+    refetch,
+  } = useQuery<GoldPriceResponse>({
+    queryKey: ['gold-prices'],
+    queryFn: fetchAllGoldPrices,
+    refetchInterval: env.CACHE_TTL * 1000,
+    staleTime: env.CACHE_TTL * 1000,
+    retry: 2,
+  });
+
+  const memoizedValue = useMemo<GoldPriceContextType>(() => {
+    const hasData = Boolean(data?.success && Array.isArray(data.data));
+    const derivedError =
+      error instanceof Error
+        ? error.message
+        : data && !data.success
+          ? data.error || 'Failed to fetch gold price data'
+          : null;
+
+    const handleRefetch = async () => {
+      await refetch({ throwOnError: false });
+    };
+
+    return {
+      goldPrices: hasData ? data!.data : [],
+      loading: isLoading || (isFetching && !hasData),
+      error: derivedError,
+      refetch: handleRefetch,
+    };
+  }, [data, error, isFetching, isLoading, refetch]);
 
   return (
-    <GoldPriceContext.Provider value={value}>
+    <GoldPriceContext.Provider value={memoizedValue}>
       {children}
     </GoldPriceContext.Provider>
   );
